@@ -1,0 +1,51 @@
+{% extends "campeonatos/base.html" %}
+
+
+{% block title %}
+    LigaHub
+{% endblock %}
+
+
+{% block content %}
+
+<h1>LigaHub</h1>
+
+<p>
+    Sistema para gerenciamento de campeonatos
+    futebolísticos no formato de pontos corridos.
+</p>
+
+
+<h2>Gerenciamento</h2>
+
+
+<p>
+    <a
+        class="botao"
+        href="{% url 'campeonatos:campeonato_listar' %}"
+    >
+        Campeonatos
+    </a>
+</p>
+
+
+<p>
+    <a
+        class="botao"
+        href="{% url 'campeonatos:inscricao_listar' %}"
+    >
+        Inscrições
+    </a>
+</p>
+
+
+<p>
+    <a
+        class="botao"
+        href="{% url 'campeonatos:partida_listar' %}"
+    >
+        Partidas
+    </a>
+</p>
+
+{% endblock %}

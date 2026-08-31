@@ -1,0 +1,40 @@
+{% extends "campeonatos/base.html" %}
+
+
+{% block title %}
+    {{ titulo }} | LigaHub
+{% endblock %}
+
+
+{% block content %}
+
+<h1>{{ titulo }}</h1>
+
+
+{% if form.non_field_errors %}
+
+    <div class="erro">
+
+        {{ form.non_field_errors }}
+
+    </div>
+
+{% endif %}
+
+
+<form method="post">
+
+    {% csrf_token %}
+
+    {{ form.as_p }}
+
+    <button
+        class="botao"
+        type="submit"
+    >
+        Salvar
+    </button>
+
+</form>
+
+{% endblock %}
