@@ -1,0 +1,80 @@
+{% extends "campeonatos/base.html" %}
+
+
+{% block title %}
+    Estádios | LigaHub
+{% endblock %}
+
+
+{% block content %}
+
+<h1>Estádios</h1>
+
+
+<div class="acoes">
+
+    <a
+        class="botao"
+        href="{% url 'campeonatos:estadio_criar' %}"
+    >
+        Novo estádio
+    </a>
+
+</div>
+
+
+<table>
+
+    <thead>
+
+        <tr>
+            <th>Nome</th>
+            <th>Cidade</th>
+            <th>Endereço</th>
+            <th>Capacidade</th>
+        </tr>
+
+    </thead>
+
+
+    <tbody>
+
+        {% for estadio in estadios %}
+
+            <tr>
+
+                <td>
+                    {{ estadio.nome }}
+                </td>
+
+                <td>
+                    {{ estadio.cidade }}
+                </td>
+
+                <td>
+                    {{ estadio.endereco }}
+                </td>
+
+                <td>
+                    {{ estadio.capacidade }}
+                </td>
+
+            </tr>
+
+        {% empty %}
+
+            <tr>
+
+                <td colspan="4">
+                    Nenhum estádio cadastrado.
+                </td>
+
+            </tr>
+
+        {% endfor %}
+
+    </tbody>
+
+</table>
+
+{% endblock %}
