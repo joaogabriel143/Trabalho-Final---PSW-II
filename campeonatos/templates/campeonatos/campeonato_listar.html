@@ -1,0 +1,91 @@
+{% extends "campeonatos/base.html" %}
+
+
+{% block title %}
+    Campeonatos | LigaHub
+{% endblock %}
+
+
+{% block content %}
+
+<h1>Campeonatos</h1>
+
+
+<div class="acoes">
+
+    <a
+        class="botao"
+        href="{% url 'campeonatos:campeonato_criar' %}"
+    >
+        Novo campeonato
+    </a>
+
+</div>
+
+
+<table>
+
+    <thead>
+
+        <tr>
+            <th>Nome</th>
+            <th>Temporada</th>
+            <th>Início</th>
+            <th>Fim</th>
+            <th>Ativo</th>
+        </tr>
+
+    </thead>
+
+
+    <tbody>
+
+        {% for campeonato in campeonatos %}
+
+            <tr>
+
+                <td>
+                    {{ campeonato.nome }}
+                </td>
+
+                <td>
+                    {{ campeonato.temporada }}
+                </td>
+
+                <td>
+                    {{ campeonato.data_inicio }}
+                </td>
+
+                <td>
+                    {{ campeonato.data_fim }}
+                </td>
+
+                <td>
+
+                    {% if campeonato.ativo %}
+                        Sim
+                    {% else %}
+                        Não
+                    {% endif %}
+
+                </td>
+
+            </tr>
+
+        {% empty %}
+
+            <tr>
+
+                <td colspan="5">
+                    Nenhum campeonato cadastrado.
+                </td>
+
+            </tr>
+
+        {% endfor %}
+
+    </tbody>
+
+</table>
+
+{% endblock %}
