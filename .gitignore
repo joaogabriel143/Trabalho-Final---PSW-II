@@ -1,0 +1,22 @@
+# Ambiente virtual
+venv/
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Banco de dados local
+db.sqlite3
+
+# Arquivos enviados pelos usuários
+media/
+
+# VS Code e outras IDEs
+.vscode/
+.idea/
+
+# Variáveis de ambiente
+.env
+
+# Arquivos do sistema
+.DS_Store
