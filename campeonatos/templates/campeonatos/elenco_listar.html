@@ -1,0 +1,85 @@
+{% extends "campeonatos/base.html" %}
+
+
+{% block title %}
+    Elencos | LigaHub
+{% endblock %}
+
+
+{% block content %}
+
+<h1>Elencos</h1>
+
+
+<div class="acoes">
+
+    <a
+        class="botao"
+        href="{% url 'campeonatos:elenco_criar' %}"
+    >
+        Adicionar jogador
+    </a>
+
+</div>
+
+
+<table>
+
+    <thead>
+
+        <tr>
+            <th>Time</th>
+            <th>Nº</th>
+            <th>Jogador</th>
+            <th>Posição</th>
+            <th>Temporada</th>
+        </tr>
+
+    </thead>
+
+
+    <tbody>
+
+        {% for jogador_time in jogadores %}
+
+            <tr>
+
+                <td>
+                    {{ jogador_time.time }}
+                </td>
+
+                <td>
+                    {{ jogador_time.numero_camisa }}
+                </td>
+
+                <td>
+                    {{ jogador_time.jogador }}
+                </td>
+
+                <td>
+                    {{ jogador_time.posicao }}
+                </td>
+
+                <td>
+                    {{ jogador_time.temporada }}
+                </td>
+
+            </tr>
+
+        {% empty %}
+
+            <tr>
+
+                <td colspan="5">
+                    Nenhum jogador cadastrado em elenco.
+                </td>
+
+            </tr>
+
+        {% endfor %}
+
+    </tbody>
+
+</table>
+
+{% endblock %}

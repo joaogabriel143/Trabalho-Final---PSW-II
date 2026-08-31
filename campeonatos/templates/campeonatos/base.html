@@ -95,8 +95,15 @@
         .erro {
             color: #b00020;
         }
+
+        .escudo {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+        }
     </style>
 </head>
+
 
 <body>
 
@@ -105,12 +112,25 @@
     <strong>LigaHub</strong>
 
     <nav>
+
         <a href="{% url 'campeonatos:inicio' %}">
             Início
         </a>
 
         <a href="{% url 'campeonatos:campeonato_listar' %}">
             Campeonatos
+        </a>
+
+        <a href="{% url 'campeonatos:time_listar' %}">
+            Times
+        </a>
+
+        <a href="{% url 'campeonatos:pessoa_listar' %}">
+            Pessoas
+        </a>
+
+        <a href="{% url 'campeonatos:estadio_listar' %}">
+            Estádios
         </a>
 
         <a href="{% url 'campeonatos:inscricao_listar' %}">
@@ -120,6 +140,11 @@
         <a href="{% url 'campeonatos:partida_listar' %}">
             Partidas
         </a>
+
+        <a href="{% url 'campeonatos:elenco_listar' %}">
+            Elencos
+        </a>
+
     </nav>
 
 </header>

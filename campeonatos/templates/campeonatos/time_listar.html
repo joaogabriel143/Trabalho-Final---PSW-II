@@ -1,0 +1,95 @@
+{% extends "campeonatos/base.html" %}
+
+
+{% block title %}
+    Times | LigaHub
+{% endblock %}
+
+
+{% block content %}
+
+<h1>Times</h1>
+
+
+<div class="acoes">
+
+    <a
+        class="botao"
+        href="{% url 'campeonatos:time_criar' %}"
+    >
+        Novo time
+    </a>
+
+</div>
+
+
+<table>
+
+    <thead>
+
+        <tr>
+            <th>Escudo</th>
+            <th>Nome</th>
+            <th>Cidade</th>
+            <th>Técnico</th>
+            <th>Fundação</th>
+        </tr>
+
+    </thead>
+
+
+    <tbody>
+
+        {% for time in times %}
+
+            <tr>
+
+                <td>
+
+                    {% if time.escudo %}
+
+                        <img
+                            class="escudo"
+                            src="{{ time.escudo.url }}"
+                            alt="Escudo de {{ time.nome }}"
+                        >
+
+                    {% endif %}
+
+                </td>
+
+                <td>
+                    {{ time.nome }}
+                </td>
+
+                <td>
+                    {{ time.cidade }}
+                </td>
+
+                <td>
+                    {{ time.tecnico }}
+                </td>
+
+                <td>
+                    {{ time.ano_fundacao }}
+                </td>
+
+            </tr>
+
+        {% empty %}
+
+            <tr>
+
+                <td colspan="5">
+                    Nenhum time cadastrado.
+                </td>
+
+            </tr>
+
+        {% endfor %}
+
+    </tbody>
+
+</table>
+
+{% endblock %}

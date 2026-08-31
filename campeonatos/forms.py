@@ -1,7 +1,19 @@
 from django import forms
 
-from .models import Campeonato, Inscricao, Partida
+from .models import (
+    Campeonato,
+    Estadio,
+    Inscricao,
+    JogadorTime,
+    Partida,
+    Pessoa,
+    Time,
+)
 
+
+# =========================================================
+# CAMPEONATO
+# =========================================================
 
 class CampeonatoForm(forms.ModelForm):
     class Meta:
@@ -28,6 +40,64 @@ class CampeonatoForm(forms.ModelForm):
         }
 
 
+# =========================================================
+# PESSOA
+# =========================================================
+
+class PessoaForm(forms.ModelForm):
+    class Meta:
+        model = Pessoa
+
+        fields = [
+            "nome",
+            "data_nascimento",
+        ]
+
+        widgets = {
+            "data_nascimento": forms.DateInput(
+                attrs={"type": "date"},
+                format="%Y-%m-%d",
+            ),
+        }
+
+
+# =========================================================
+# ESTÁDIO
+# =========================================================
+
+class EstadioForm(forms.ModelForm):
+    class Meta:
+        model = Estadio
+
+        fields = [
+            "nome",
+            "cidade",
+            "endereco",
+            "capacidade",
+        ]
+
+
+# =========================================================
+# TIME
+# =========================================================
+
+class TimeForm(forms.ModelForm):
+    class Meta:
+        model = Time
+
+        fields = [
+            "nome",
+            "cidade",
+            "tecnico",
+            "escudo",
+            "ano_fundacao",
+        ]
+
+
+# =========================================================
+# INSCRIÇÃO
+# =========================================================
+
 class InscricaoForm(forms.ModelForm):
     class Meta:
         model = Inscricao
@@ -45,6 +115,10 @@ class InscricaoForm(forms.ModelForm):
             ),
         }
 
+
+# =========================================================
+# PARTIDA
+# =========================================================
 
 class PartidaForm(forms.ModelForm):
     class Meta:
@@ -72,3 +146,20 @@ class PartidaForm(forms.ModelForm):
                 format="%H:%M",
             ),
         }
+
+
+# =========================================================
+# ELENCO
+# =========================================================
+
+class JogadorTimeForm(forms.ModelForm):
+    class Meta:
+        model = JogadorTime
+
+        fields = [
+            "time",
+            "jogador",
+            "posicao",
+            "numero_camisa",
+            "temporada",
+        ]

@@ -1,7 +1,24 @@
 from django.shortcuts import redirect, render
 
-from .forms import CampeonatoForm, InscricaoForm, PartidaForm
-from .models import Campeonato, Inscricao, Partida
+from .forms import (
+    CampeonatoForm,
+    EstadioForm,
+    InscricaoForm,
+    JogadorTimeForm,
+    PartidaForm,
+    PessoaForm,
+    TimeForm,
+)
+
+from .models import (
+    Campeonato,
+    Estadio,
+    Inscricao,
+    JogadorTime,
+    Partida,
+    Pessoa,
+    Time,
+)
 
 
 # =========================================================
@@ -50,6 +67,141 @@ def campeonato_criar(request):
     contexto = {
         "form": form,
         "titulo": "Cadastrar campeonato",
+    }
+
+    return render(
+        request,
+        "campeonatos/formulario.html",
+        contexto,
+    )
+
+
+# =========================================================
+# PESSOA
+# =========================================================
+
+def pessoa_listar(request):
+    pessoas = Pessoa.objects.all()
+
+    contexto = {
+        "pessoas": pessoas,
+    }
+
+    return render(
+        request,
+        "campeonatos/pessoa_listar.html",
+        contexto,
+    )
+
+
+def pessoa_criar(request):
+    if request.method == "POST":
+        form = PessoaForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+
+            return redirect(
+                "campeonatos:pessoa_listar"
+            )
+
+    else:
+        form = PessoaForm()
+
+    contexto = {
+        "form": form,
+        "titulo": "Cadastrar pessoa",
+    }
+
+    return render(
+        request,
+        "campeonatos/formulario.html",
+        contexto,
+    )
+
+
+# =========================================================
+# ESTÁDIO
+# =========================================================
+
+def estadio_listar(request):
+    estadios = Estadio.objects.all()
+
+    contexto = {
+        "estadios": estadios,
+    }
+
+    return render(
+        request,
+        "campeonatos/estadio_listar.html",
+        contexto,
+    )
+
+
+def estadio_criar(request):
+    if request.method == "POST":
+        form = EstadioForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+
+            return redirect(
+                "campeonatos:estadio_listar"
+            )
+
+    else:
+        form = EstadioForm()
+
+    contexto = {
+        "form": form,
+        "titulo": "Cadastrar estádio",
+    }
+
+    return render(
+        request,
+        "campeonatos/formulario.html",
+        contexto,
+    )
+
+
+# =========================================================
+# TIME
+# =========================================================
+
+def time_listar(request):
+    times = Time.objects.all()
+
+    contexto = {
+        "times": times,
+    }
+
+    return render(
+        request,
+        "campeonatos/time_listar.html",
+        contexto,
+    )
+
+
+def time_criar(request):
+    if request.method == "POST":
+        form = TimeForm(
+            request.POST,
+            request.FILES,
+        )
+
+        if form.is_valid():
+            form.save()
+
+            return redirect(
+                "campeonatos:time_listar"
+            )
+
+    else:
+        form = TimeForm()
+
+    contexto = {
+        "form": form,
+        "titulo": "Cadastrar time",
     }
 
     return render(
@@ -138,6 +290,50 @@ def partida_criar(request):
     contexto = {
         "form": form,
         "titulo": "Cadastrar partida",
+    }
+
+    return render(
+        request,
+        "campeonatos/formulario.html",
+        contexto,
+    )
+
+
+# =========================================================
+# ELENCO
+# =========================================================
+
+def elenco_listar(request):
+    jogadores = JogadorTime.objects.all()
+
+    contexto = {
+        "jogadores": jogadores,
+    }
+
+    return render(
+        request,
+        "campeonatos/elenco_listar.html",
+        contexto,
+    )
+
+
+def elenco_criar(request):
+    if request.method == "POST":
+        form = JogadorTimeForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+
+            return redirect(
+                "campeonatos:elenco_listar"
+            )
+
+    else:
+        form = JogadorTimeForm()
+
+    contexto = {
+        "form": form,
+        "titulo": "Adicionar jogador ao elenco",
     }
 
     return render(

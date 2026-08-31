@@ -7,6 +7,7 @@ app_name = "campeonatos"
 
 
 urlpatterns = [
+    # Início
     path(
         "",
         views.inicio,
@@ -23,6 +24,42 @@ urlpatterns = [
         "campeonatos/novo/",
         views.campeonato_criar,
         name="campeonato_criar",
+    ),
+
+    # Pessoa
+    path(
+        "pessoas/",
+        views.pessoa_listar,
+        name="pessoa_listar",
+    ),
+    path(
+        "pessoas/nova/",
+        views.pessoa_criar,
+        name="pessoa_criar",
+    ),
+
+    # Estádio
+    path(
+        "estadios/",
+        views.estadio_listar,
+        name="estadio_listar",
+    ),
+    path(
+        "estadios/novo/",
+        views.estadio_criar,
+        name="estadio_criar",
+    ),
+
+    # Time
+    path(
+        "times/",
+        views.time_listar,
+        name="time_listar",
+    ),
+    path(
+        "times/novo/",
+        views.time_criar,
+        name="time_criar",
     ),
 
     # Inscrição
@@ -47,5 +84,17 @@ urlpatterns = [
         "partidas/nova/",
         views.partida_criar,
         name="partida_criar",
+    ),
+
+    # Elenco
+    path(
+        "elencos/",
+        views.elenco_listar,
+        name="elenco_listar",
+    ),
+    path(
+        "elencos/novo/",
+        views.elenco_criar,
+        name="elenco_criar",
     ),
 ]
