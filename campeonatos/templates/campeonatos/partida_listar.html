@@ -1,0 +1,112 @@
+{% extends "campeonatos/base.html" %}
+
+
+{% block title %}
+    Partidas | LigaHub
+{% endblock %}
+
+
+{% block content %}
+
+<h1>Partidas</h1>
+
+
+<div class="acoes">
+
+    <a
+        class="botao"
+        href="{% url 'campeonatos:partida_criar' %}"
+    >
+        Nova partida
+    </a>
+
+</div>
+
+
+<table>
+
+    <thead>
+
+        <tr>
+            <th>Campeonato</th>
+            <th>Rodada</th>
+            <th>Data</th>
+            <th>Horário</th>
+            <th>Mandante</th>
+            <th>Placar</th>
+            <th>Visitante</th>
+            <th>Estádio</th>
+        </tr>
+
+    </thead>
+
+
+    <tbody>
+
+        {% for partida in partidas %}
+
+            <tr>
+
+                <td>
+                    {{ partida.campeonato }}
+                </td>
+
+                <td>
+                    {{ partida.rodada }}
+                </td>
+
+                <td>
+                    {{ partida.data }}
+                </td>
+
+                <td>
+                    {{ partida.horario }}
+                </td>
+
+                <td>
+                    {{ partida.time_mandante }}
+                </td>
+
+                <td>
+
+                    {% if partida.realizada %}
+
+                        {{ partida.gols_mandante }}
+                        x
+                        {{ partida.gols_visitante }}
+
+                    {% else %}
+
+                        — x —
+
+                    {% endif %}
+
+                </td>
+
+                <td>
+                    {{ partida.time_visitante }}
+                </td>
+
+                <td>
+                    {{ partida.estadio }}
+                </td>
+
+            </tr>
+
+        {% empty %}
+
+            <tr>
+
+                <td colspan="8">
+                    Nenhuma partida cadastrada.
+                </td>
+
+            </tr>
+
+        {% endfor %}
+
+    </tbody>
+
+</table>
+
+{% endblock %}

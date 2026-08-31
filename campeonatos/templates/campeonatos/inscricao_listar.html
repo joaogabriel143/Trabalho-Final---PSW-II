@@ -1,0 +1,80 @@
+{% extends "campeonatos/base.html" %}
+
+
+{% block title %}
+    Inscrições | LigaHub
+{% endblock %}
+
+
+{% block content %}
+
+<h1>Inscrições</h1>
+
+
+<div class="acoes">
+
+    <a
+        class="botao"
+        href="{% url 'campeonatos:inscricao_criar' %}"
+    >
+        Inscrever time
+    </a>
+
+</div>
+
+
+<table>
+
+    <thead>
+
+        <tr>
+            <th>Campeonato</th>
+            <th>Time</th>
+            <th>Técnico</th>
+            <th>Data da inscrição</th>
+        </tr>
+
+    </thead>
+
+
+    <tbody>
+
+        {% for inscricao in inscricoes %}
+
+            <tr>
+
+                <td>
+                    {{ inscricao.campeonato }}
+                </td>
+
+                <td>
+                    {{ inscricao.time }}
+                </td>
+
+                <td>
+                    {{ inscricao.time.tecnico }}
+                </td>
+
+                <td>
+                    {{ inscricao.data_inscricao }}
+                </td>
+
+            </tr>
+
+        {% empty %}
+
+            <tr>
+
+                <td colspan="4">
+                    Nenhuma inscrição cadastrada.
+                </td>
+
+            </tr>
+
+        {% endfor %}
+
+    </tbody>
+
+</table>
+
+{% endblock %}
