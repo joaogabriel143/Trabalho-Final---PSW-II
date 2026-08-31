@@ -26,6 +26,37 @@
     >
         Campeonatos
     </a>
+
+    <a
+        class="botao"
+        href="{% url 'campeonatos:time_listar' %}"
+    >
+        Times
+    </a>
+
+    <a
+        class="botao"
+        href="{% url 'campeonatos:pessoa_listar' %}"
+    >
+        Pessoas
+    </a>
+</p>
+
+
+<p>
+    <a
+        class="botao"
+        href="{% url 'campeonatos:estadio_listar' %}"
+    >
+        Estádios
+    </a>
+
+    <a
+        class="botao"
+        href="{% url 'campeonatos:elenco_listar' %}"
+    >
+        Elencos
+    </a>
 </p>
 
 
@@ -36,10 +67,7 @@
     >
         Inscrições
     </a>
-</p>
 
-
-<p>
     <a
         class="botao"
         href="{% url 'campeonatos:partida_listar' %}"
