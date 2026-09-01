@@ -1,14 +1,16 @@
+from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
 from django.utils import timezone
+from django.utils.text import slugify
 
 
 # =========================================================
 # PESSOA
 # =========================================================
 
-class Pessoa(models.Model):
+class Pessoa(User):
     nome = models.CharField(max_length=150)
     data_nascimento = models.DateField()
 
@@ -24,6 +26,50 @@ class Pessoa(models.Model):
                     "A data de nascimento não pode estar no futuro."
                 )
             })
+
+    def gerar_username(self):
+        """
+        Gera automaticamente um username interno.
+
+        Exemplos:
+        João Silva -> joao-silva
+        Outro João Silva -> joao-silva-2
+        """
+
+        base = slugify(self.nome) or "pessoa"
+        base = base[:140]
+
+        username = base
+        contador = 2
+
+        while User.objects.filter(
+            username=username
+        ).exclude(
+            pk=self.pk
+        ).exists():
+
+            sufixo = f"-{contador}"
+
+            username = (
+                f"{base[:150 - len(sufixo)]}"
+                f"{sufixo}"
+            )
+
+            contador += 1
+
+        return username
+
+    def save(self, *args, **kwargs):
+        # O organizador não precisa cadastrar username.
+        if not self.username:
+            self.username = self.gerar_username()
+
+        # Jogadores e técnicos comuns não possuem
+        # uma senha utilizável para fazer login.
+        if not self.password:
+            self.set_unusable_password()
+
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.nome
@@ -51,13 +97,11 @@ class Campeonato(models.Model):
 
         erros = {}
 
-        # Temporada precisa ser válida.
         if self.temporada is not None and self.temporada <= 0:
             erros["temporada"] = (
                 "Informe uma temporada válida."
             )
 
-        # Campeonato não pode terminar antes de começar.
         if (
             self.data_inicio
             and self.data_fim
@@ -67,9 +111,6 @@ class Campeonato(models.Model):
                 "A data final não pode ser anterior à data inicial."
             )
 
-        # Se o campeonato já possui partidas, suas datas
-        # não podem ser alteradas de modo que alguma partida
-        # fique fora do novo período.
         if (
             self.pk
             and self.data_inicio
@@ -86,8 +127,6 @@ class Campeonato(models.Model):
                     "período informado para o campeonato."
                 )
 
-        # A nova data de início também não pode tornar
-        # inscrições existentes inválidas.
         if self.pk and self.data_inicio:
             inscricao_invalida = self.inscricoes.filter(
                 data_inscricao__gt=self.data_inicio
@@ -202,7 +241,6 @@ class Time(models.Model):
 
         erros = {}
 
-        # Ano de fundação.
         if self.ano_fundacao is not None:
             if self.ano_fundacao <= 0:
                 erros["ano_fundacao"] = (
@@ -214,9 +252,6 @@ class Time(models.Model):
                     "O ano de fundação não pode estar no futuro."
                 )
 
-        # Se o time já participa de campeonatos, ao trocar
-        # o técnico verificamos se ele já comanda outro time
-        # em algum desses mesmos campeonatos.
         if self.pk and self.tecnico_id:
             campeonatos_do_time = self.inscricoes.values_list(
                 "campeonato_id",
@@ -275,21 +310,12 @@ class Inscricao(models.Model):
 
         erros = {}
 
-        # -------------------------------------------------
-        # Data da inscrição
-        # -------------------------------------------------
-
         if self.campeonato_id and self.data_inscricao:
             if self.data_inscricao > self.campeonato.data_inicio:
                 erros["data_inscricao"] = (
                     "A inscrição deve ser realizada até a data "
                     "de início do campeonato."
                 )
-
-        # -------------------------------------------------
-        # Depois que as partidas começaram a ser montadas,
-        # os participantes do campeonato ficam definidos.
-        # -------------------------------------------------
 
         if self.campeonato_id:
             if self.pk is None:
@@ -336,11 +362,6 @@ class Inscricao(models.Model):
                                 "existem partidas cadastradas."
                             )
 
-        # -------------------------------------------------
-        # Mesmo time não pode aparecer duas vezes
-        # no mesmo campeonato.
-        # -------------------------------------------------
-
         if self.campeonato_id and self.time_id:
             inscricao_duplicada = Inscricao.objects.filter(
                 campeonato_id=self.campeonato_id,
@@ -353,11 +374,6 @@ class Inscricao(models.Model):
                 erros["time"] = (
                     "Este time já está inscrito neste campeonato."
                 )
-
-        # -------------------------------------------------
-        # Mesmo técnico não pode comandar dois times
-        # dentro do mesmo campeonato.
-        # -------------------------------------------------
 
         if self.campeonato_id and self.time_id:
             tecnico = self.time.tecnico
@@ -420,8 +436,6 @@ class Partida(models.Model):
     data = models.DateField()
     horario = models.TimeField()
 
-    # Os campos ficam vazios enquanto a partida
-    # ainda não tiver sido realizada.
     gols_mandante = models.PositiveIntegerField(
         null=True,
         blank=True,
@@ -465,12 +479,6 @@ class Partida(models.Model):
         maximo_rodadas = 0
         rodadas_por_turno = 0
 
-        # -------------------------------------------------
-        # Campeonato precisa possuir número PAR de times.
-        # Essa verificação ocorre ao cadastrar partidas,
-        # permitindo cadastrar as inscrições uma a uma.
-        # -------------------------------------------------
-
         if self.campeonato_id:
             quantidade_times = (
                 self.campeonato.inscricoes.count()
@@ -492,10 +500,6 @@ class Partida(models.Model):
                 rodadas_por_turno = quantidade_times - 1
                 maximo_rodadas = 2 * rodadas_por_turno
 
-        # -------------------------------------------------
-        # Rodada
-        # -------------------------------------------------
-
         if self.rodada is not None:
             if self.rodada <= 0:
                 erros["rodada"] = (
@@ -510,10 +514,6 @@ class Partida(models.Model):
                     f"Com {quantidade_times} times, o campeonato "
                     f"possui no máximo {maximo_rodadas} rodadas."
                 )
-
-        # -------------------------------------------------
-        # Placar
-        # -------------------------------------------------
 
         mandante_tem_gols = (
             self.gols_mandante is not None
@@ -533,10 +533,6 @@ class Partida(models.Model):
             erros["gols_mandante"] = mensagem
             erros["gols_visitante"] = mensagem
 
-        # -------------------------------------------------
-        # Mandante e visitante precisam ser diferentes.
-        # -------------------------------------------------
-
         if (
             self.time_mandante_id
             and self.time_visitante_id
@@ -547,10 +543,6 @@ class Partida(models.Model):
                 "Um time não pode jogar contra ele mesmo."
             )
 
-        # -------------------------------------------------
-        # Partida dentro das datas do campeonato.
-        # -------------------------------------------------
-
         if self.campeonato_id and self.data:
             if (
                 self.data < self.campeonato.data_inicio
@@ -560,10 +552,6 @@ class Partida(models.Model):
                     "A partida deve acontecer dentro do período "
                     "do campeonato."
                 )
-
-        # -------------------------------------------------
-        # Mandante precisa estar inscrito.
-        # -------------------------------------------------
 
         if self.campeonato_id and self.time_mandante_id:
             mandante_inscrito = Inscricao.objects.filter(
@@ -577,10 +565,6 @@ class Partida(models.Model):
                     "neste campeonato."
                 )
 
-        # -------------------------------------------------
-        # Visitante precisa estar inscrito.
-        # -------------------------------------------------
-
         if self.campeonato_id and self.time_visitante_id:
             visitante_inscrito = Inscricao.objects.filter(
                 campeonato_id=self.campeonato_id,
@@ -592,10 +576,6 @@ class Partida(models.Model):
                     "O time visitante não está inscrito "
                     "neste campeonato."
                 )
-
-        # -------------------------------------------------
-        # Cada time joga apenas uma vez por rodada.
-        # -------------------------------------------------
 
         if (
             self.campeonato_id
@@ -639,13 +619,6 @@ class Partida(models.Model):
                     "nesta rodada."
                 )
 
-        # -------------------------------------------------
-        # TURNO E RETURNO
-        #
-        # Cada par de times pode se enfrentar apenas
-        # uma vez em cada turno.
-        # -------------------------------------------------
-
         if (
             self.campeonato_id
             and self.rodada
@@ -686,15 +659,6 @@ class Partida(models.Model):
                     "Estes dois times já se enfrentaram neste turno."
                 )
 
-        # -------------------------------------------------
-        # O mesmo mando não pode se repetir.
-        #
-        # Exemplo:
-        # Bahia x Flamengo -> permitido uma vez
-        # Flamengo x Bahia -> permitido uma vez
-        # Bahia x Flamengo novamente -> proibido
-        # -------------------------------------------------
-
         if (
             self.campeonato_id
             and self.time_mandante_id
@@ -714,10 +678,6 @@ class Partida(models.Model):
                     "visitante já foi cadastrado neste campeonato."
                 )
 
-        # -------------------------------------------------
-        # Conflitos de DATA e HORÁRIO.
-        # -------------------------------------------------
-
         if self.data and self.horario:
             partidas_no_horario = Partida.objects.filter(
                 data=self.data,
@@ -726,8 +686,6 @@ class Partida(models.Model):
                 pk=self.pk,
             )
 
-            # Mesmo estádio não pode receber dois jogos
-            # simultaneamente.
             if self.estadio_id:
                 estadio_ocupado = partidas_no_horario.filter(
                     estadio_id=self.estadio_id
@@ -739,8 +697,6 @@ class Partida(models.Model):
                         "marcada nesta data e horário."
                     )
 
-            # Mandante não pode estar jogando outra partida
-            # ao mesmo tempo.
             if self.time_mandante_id:
                 conflito_mandante = partidas_no_horario.filter(
                     Q(
@@ -757,8 +713,6 @@ class Partida(models.Model):
                         "nesta data e horário."
                     )
 
-            # Visitante também não pode estar em outra
-            # partida simultaneamente.
             if self.time_visitante_id:
                 conflito_visitante = partidas_no_horario.filter(
                     Q(
@@ -813,8 +767,6 @@ class Partida(models.Model):
         ]
 
         constraints = [
-            # Mesmo estádio não pode receber duas
-            # partidas na mesma data e horário.
             models.UniqueConstraint(
                 fields=[
                     "data",
@@ -824,8 +776,6 @@ class Partida(models.Model):
                 name="unique_partida_estadio_horario",
             ),
 
-            # A combinação campeonato + mandante + visitante
-            # só pode aparecer uma vez.
             models.UniqueConstraint(
                 fields=[
                     "campeonato",
@@ -867,10 +817,6 @@ class JogadorTime(models.Model):
 
         erros = {}
 
-        # -------------------------------------------------
-        # Número da camisa
-        # -------------------------------------------------
-
         if (
             self.numero_camisa is not None
             and self.numero_camisa <= 0
@@ -879,10 +825,6 @@ class JogadorTime(models.Model):
                 "O número da camisa deve ser maior que zero."
             )
 
-        # -------------------------------------------------
-        # Temporada
-        # -------------------------------------------------
-
         if (
             self.temporada is not None
             and self.temporada <= 0
@@ -890,13 +832,6 @@ class JogadorTime(models.Model):
             erros["temporada"] = (
                 "Informe uma temporada válida."
             )
-
-        # -------------------------------------------------
-        # Um jogador pertence a apenas um time
-        # em cada temporada.
-        #
-        # Não estamos armazenando histórico de transferências.
-        # -------------------------------------------------
 
         if (
             self.jogador_id
@@ -917,11 +852,6 @@ class JogadorTime(models.Model):
                     f"{vinculo.time.nome} na temporada "
                     f"{self.temporada}."
                 )
-
-        # -------------------------------------------------
-        # Número da camisa não pode se repetir
-        # no mesmo time e temporada.
-        # -------------------------------------------------
 
         if (
             self.time_id
@@ -962,8 +892,6 @@ class JogadorTime(models.Model):
         ]
 
         constraints = [
-            # Um jogador só pode pertencer a um time
-            # em determinada temporada.
             models.UniqueConstraint(
                 fields=[
                     "jogador",
@@ -972,7 +900,6 @@ class JogadorTime(models.Model):
                 name="unique_jogador_temporada",
             ),
 
-            # Camisa única dentro do time/temporada.
             models.UniqueConstraint(
                 fields=[
                     "time",
