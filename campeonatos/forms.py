@@ -11,10 +11,6 @@ from .models import (
 )
 
 
-# =========================================================
-# CAMPEONATO
-# =========================================================
-
 class CampeonatoForm(forms.ModelForm):
     class Meta:
         model = Campeonato
@@ -40,14 +36,12 @@ class CampeonatoForm(forms.ModelForm):
         }
 
 
-# =========================================================
-# PESSOA
-# =========================================================
-
 class PessoaForm(forms.ModelForm):
     class Meta:
         model = Pessoa
 
+        # Username e senha NÃO aparecem para
+        # jogadores ou técnicos.
         fields = [
             "nome",
             "data_nascimento",
@@ -61,10 +55,6 @@ class PessoaForm(forms.ModelForm):
         }
 
 
-# =========================================================
-# ESTÁDIO
-# =========================================================
-
 class EstadioForm(forms.ModelForm):
     class Meta:
         model = Estadio
@@ -76,10 +66,6 @@ class EstadioForm(forms.ModelForm):
             "capacidade",
         ]
 
-
-# =========================================================
-# TIME
-# =========================================================
 
 class TimeForm(forms.ModelForm):
     class Meta:
@@ -93,10 +79,6 @@ class TimeForm(forms.ModelForm):
             "ano_fundacao",
         ]
 
-
-# =========================================================
-# INSCRIÇÃO
-# =========================================================
 
 class InscricaoForm(forms.ModelForm):
     class Meta:
@@ -115,10 +97,6 @@ class InscricaoForm(forms.ModelForm):
             ),
         }
 
-
-# =========================================================
-# PARTIDA
-# =========================================================
 
 class PartidaForm(forms.ModelForm):
     class Meta:
@@ -147,10 +125,6 @@ class PartidaForm(forms.ModelForm):
             ),
         }
 
-
-# =========================================================
-# ELENCO
-# =========================================================
 
 class JogadorTimeForm(forms.ModelForm):
     class Meta:

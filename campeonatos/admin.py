@@ -11,18 +11,10 @@ from .models import (
 )
 
 
-# =========================================================
-# CONFIGURAÇÃO GERAL DO ADMIN
-# =========================================================
-
 admin.site.site_header = "LigaHub - Administração"
 admin.site.site_title = "LigaHub"
 admin.site.index_title = "Gerenciamento de Campeonatos"
 
-
-# =========================================================
-# CAMPEONATO
-# =========================================================
 
 @admin.register(Campeonato)
 class CampeonatoAdmin(admin.ModelAdmin):
@@ -55,30 +47,36 @@ class CampeonatoAdmin(admin.ModelAdmin):
         return obj.quantidade_times()
 
 
-# =========================================================
-# PESSOA
-# =========================================================
-
 @admin.register(Pessoa)
 class PessoaAdmin(admin.ModelAdmin):
     list_display = (
         "id",
         "nome",
         "data_nascimento",
+        "username",
     )
 
     search_fields = (
         "nome",
+        "username",
     )
 
     ordering = (
         "nome",
     )
 
+    # O username existe apenas internamente
+    # e é gerado automaticamente.
+    readonly_fields = (
+        "username",
+    )
 
-# =========================================================
-# ESTÁDIO
-# =========================================================
+    fields = (
+        "nome",
+        "data_nascimento",
+        "username",
+    )
+
 
 @admin.register(Estadio)
 class EstadioAdmin(admin.ModelAdmin):
@@ -103,10 +101,6 @@ class EstadioAdmin(admin.ModelAdmin):
         "nome",
     )
 
-
-# =========================================================
-# TIME
-# =========================================================
 
 @admin.register(Time)
 class TimeAdmin(admin.ModelAdmin):
@@ -133,10 +127,6 @@ class TimeAdmin(admin.ModelAdmin):
     )
 
 
-# =========================================================
-# INSCRIÇÃO
-# =========================================================
-
 @admin.register(Inscricao)
 class InscricaoAdmin(admin.ModelAdmin):
     list_display = (
@@ -162,25 +152,17 @@ class InscricaoAdmin(admin.ModelAdmin):
         "time",
     )
 
-    # Não oferecemos exclusão em massa porque uma inscrição
-    # pode estar envolvida em partidas.
     def get_actions(self, request):
         actions = super().get_actions(request)
         actions.pop("delete_selected", None)
         return actions
 
-    # Uma inscrição que já possui partidas não pode
-    # ser apagada pelo Django Admin.
     def has_delete_permission(self, request, obj=None):
         if obj is not None and obj.possui_partidas():
             return False
 
         return super().has_delete_permission(request, obj)
 
-
-# =========================================================
-# PARTIDA
-# =========================================================
 
 @admin.register(Partida)
 class PartidaAdmin(admin.ModelAdmin):
@@ -227,10 +209,6 @@ class PartidaAdmin(admin.ModelAdmin):
 
         return "— x —"
 
-
-# =========================================================
-# JOGADOR / ELENCO
-# =========================================================
 
 @admin.register(JogadorTime)
 class JogadorTimeAdmin(admin.ModelAdmin):
