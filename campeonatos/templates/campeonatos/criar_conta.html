@@ -1,0 +1,48 @@
+{% extends "campeonatos/base.html" %}
+
+
+{% block title %}
+
+Criar conta - LigaHub
+
+{% endblock %}
+
+
+{% block content %}
+
+<h1>Criar conta</h1>
+
+<p>
+    Crie uma conta para poder gerenciar
+    os campeonatos do LigaHub.
+</p>
+
+
+<form method="post">
+
+    {% csrf_token %}
+
+    {{ form.non_field_errors }}
+
+    {{ form.as_p }}
+
+
+    <button
+        class="botao"
+        type="submit"
+    >
+        Criar conta
+    </button>
+
+</form>
+
+
+<p>
+    Já possui uma conta?
+
+    <a href="{% url 'campeonatos:login' %}">
+        Entrar
+    </a>
+</p>
+
+{% endblock %}
