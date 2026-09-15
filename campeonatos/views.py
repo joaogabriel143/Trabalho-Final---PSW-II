@@ -1,4 +1,21 @@
+from django.contrib.auth import login as auth_login
+from django.contrib.auth import logout as auth_logout
+
+from django.contrib.auth.decorators import login_required
+
+from django.contrib.auth.forms import (
+    AuthenticationForm,
+    UserCreationForm,
+)
+
 from django.shortcuts import redirect, render
+
+from django.utils.http import (
+    url_has_allowed_host_and_scheme,
+)
+
+from django.views.decorators.http import require_POST
+
 
 from .forms import (
     CampeonatoForm,
@@ -22,10 +39,131 @@ from .models import (
 
 
 # =========================================================
+# AUTENTICAÇÃO
+# =========================================================
+
+def entrar(request):
+
+    if request.user.is_authenticated:
+        return redirect(
+            "campeonatos:inicio"
+        )
+
+    next_url = request.GET.get(
+        "next",
+        "",
+    )
+
+    if request.method == "POST":
+
+        form = AuthenticationForm(
+            request,
+            data=request.POST,
+        )
+
+        next_url = request.POST.get(
+            "next",
+            "",
+        )
+
+        if form.is_valid():
+
+            usuario = form.get_user()
+
+            auth_login(
+                request,
+                usuario,
+            )
+
+            if (
+                next_url
+                and url_has_allowed_host_and_scheme(
+                    next_url,
+                    allowed_hosts={
+                        request.get_host()
+                    },
+                    require_https=request.is_secure(),
+                )
+            ):
+
+                return redirect(
+                    next_url
+                )
+
+            return redirect(
+                "campeonatos:inicio"
+            )
+
+    else:
+
+        form = AuthenticationForm(
+            request
+        )
+
+    contexto = {
+        "form": form,
+        "next": next_url,
+    }
+
+    return render(
+        request,
+        "campeonatos/login.html",
+        contexto,
+    )
+
+
+def criar_conta(request):
+
+    if request.user.is_authenticated:
+
+        return redirect(
+            "campeonatos:inicio"
+        )
+
+    if request.method == "POST":
+
+        form = UserCreationForm(
+            request.POST
+        )
+
+        if form.is_valid():
+
+            form.save()
+
+            return redirect(
+                "campeonatos:login"
+            )
+
+    else:
+
+        form = UserCreationForm()
+
+    return render(
+        request,
+        "campeonatos/criar_conta.html",
+        {
+            "form": form,
+        },
+    )
+
+
+@login_required
+@require_POST
+def sair(request):
+
+    auth_logout(request)
+
+    return redirect(
+        "campeonatos:inicio"
+    )
+
+
+# =========================================================
 # INÍCIO
 # =========================================================
 
 def inicio(request):
+
     return render(
         request,
         "campeonatos/inicio.html",
@@ -33,28 +171,33 @@ def inicio(request):
 
 
 # =========================================================
-# CAMPEONATO
+# CAMPEONATOS
 # =========================================================
 
 def campeonato_listar(request):
-    campeonatos = Campeonato.objects.all()
 
-    contexto = {
-        "campeonatos": campeonatos,
-    }
+    campeonatos = Campeonato.objects.all()
 
     return render(
         request,
         "campeonatos/campeonato_listar.html",
-        contexto,
+        {
+            "campeonatos": campeonatos,
+        },
     )
 
 
+@login_required
 def campeonato_criar(request):
+
     if request.method == "POST":
-        form = CampeonatoForm(request.POST)
+
+        form = CampeonatoForm(
+            request.POST
+        )
 
         if form.is_valid():
+
             form.save()
 
             return redirect(
@@ -62,43 +205,47 @@ def campeonato_criar(request):
             )
 
     else:
-        form = CampeonatoForm()
 
-    contexto = {
-        "form": form,
-        "titulo": "Cadastrar campeonato",
-    }
+        form = CampeonatoForm()
 
     return render(
         request,
         "campeonatos/formulario.html",
-        contexto,
+        {
+            "form": form,
+            "titulo": "Novo campeonato",
+        },
     )
 
 
 # =========================================================
-# PESSOA
+# PESSOAS
 # =========================================================
 
 def pessoa_listar(request):
-    pessoas = Pessoa.objects.all()
 
-    contexto = {
-        "pessoas": pessoas,
-    }
+    pessoas = Pessoa.objects.all()
 
     return render(
         request,
         "campeonatos/pessoa_listar.html",
-        contexto,
+        {
+            "pessoas": pessoas,
+        },
     )
 
 
+@login_required
 def pessoa_criar(request):
+
     if request.method == "POST":
-        form = PessoaForm(request.POST)
+
+        form = PessoaForm(
+            request.POST
+        )
 
         if form.is_valid():
+
             form.save()
 
             return redirect(
@@ -106,43 +253,47 @@ def pessoa_criar(request):
             )
 
     else:
-        form = PessoaForm()
 
-    contexto = {
-        "form": form,
-        "titulo": "Cadastrar pessoa",
-    }
+        form = PessoaForm()
 
     return render(
         request,
         "campeonatos/formulario.html",
-        contexto,
+        {
+            "form": form,
+            "titulo": "Nova pessoa",
+        },
     )
 
 
 # =========================================================
-# ESTÁDIO
+# ESTÁDIOS
 # =========================================================
 
 def estadio_listar(request):
-    estadios = Estadio.objects.all()
 
-    contexto = {
-        "estadios": estadios,
-    }
+    estadios = Estadio.objects.all()
 
     return render(
         request,
         "campeonatos/estadio_listar.html",
-        contexto,
+        {
+            "estadios": estadios,
+        },
     )
 
 
+@login_required
 def estadio_criar(request):
+
     if request.method == "POST":
-        form = EstadioForm(request.POST)
+
+        form = EstadioForm(
+            request.POST
+        )
 
         if form.is_valid():
+
             form.save()
 
             return redirect(
@@ -150,46 +301,48 @@ def estadio_criar(request):
             )
 
     else:
-        form = EstadioForm()
 
-    contexto = {
-        "form": form,
-        "titulo": "Cadastrar estádio",
-    }
+        form = EstadioForm()
 
     return render(
         request,
         "campeonatos/formulario.html",
-        contexto,
+        {
+            "form": form,
+            "titulo": "Novo estádio",
+        },
     )
 
 
 # =========================================================
-# TIME
+# TIMES
 # =========================================================
 
 def time_listar(request):
-    times = Time.objects.all()
 
-    contexto = {
-        "times": times,
-    }
+    times = Time.objects.all()
 
     return render(
         request,
         "campeonatos/time_listar.html",
-        contexto,
+        {
+            "times": times,
+        },
     )
 
 
+@login_required
 def time_criar(request):
+
     if request.method == "POST":
+
         form = TimeForm(
             request.POST,
             request.FILES,
         )
 
         if form.is_valid():
+
             form.save()
 
             return redirect(
@@ -197,43 +350,47 @@ def time_criar(request):
             )
 
     else:
-        form = TimeForm()
 
-    contexto = {
-        "form": form,
-        "titulo": "Cadastrar time",
-    }
+        form = TimeForm()
 
     return render(
         request,
         "campeonatos/formulario.html",
-        contexto,
+        {
+            "form": form,
+            "titulo": "Novo time",
+        },
     )
 
 
 # =========================================================
-# INSCRIÇÃO
+# INSCRIÇÕES
 # =========================================================
 
 def inscricao_listar(request):
-    inscricoes = Inscricao.objects.all()
 
-    contexto = {
-        "inscricoes": inscricoes,
-    }
+    inscricoes = Inscricao.objects.all()
 
     return render(
         request,
         "campeonatos/inscricao_listar.html",
-        contexto,
+        {
+            "inscricoes": inscricoes,
+        },
     )
 
 
+@login_required
 def inscricao_criar(request):
+
     if request.method == "POST":
-        form = InscricaoForm(request.POST)
+
+        form = InscricaoForm(
+            request.POST
+        )
 
         if form.is_valid():
+
             form.save()
 
             return redirect(
@@ -241,43 +398,47 @@ def inscricao_criar(request):
             )
 
     else:
-        form = InscricaoForm()
 
-    contexto = {
-        "form": form,
-        "titulo": "Inscrever time",
-    }
+        form = InscricaoForm()
 
     return render(
         request,
         "campeonatos/formulario.html",
-        contexto,
+        {
+            "form": form,
+            "titulo": "Nova inscrição",
+        },
     )
 
 
 # =========================================================
-# PARTIDA
+# PARTIDAS
 # =========================================================
 
 def partida_listar(request):
-    partidas = Partida.objects.all()
 
-    contexto = {
-        "partidas": partidas,
-    }
+    partidas = Partida.objects.all()
 
     return render(
         request,
         "campeonatos/partida_listar.html",
-        contexto,
+        {
+            "partidas": partidas,
+        },
     )
 
 
+@login_required
 def partida_criar(request):
+
     if request.method == "POST":
-        form = PartidaForm(request.POST)
+
+        form = PartidaForm(
+            request.POST
+        )
 
         if form.is_valid():
+
             form.save()
 
             return redirect(
@@ -285,43 +446,47 @@ def partida_criar(request):
             )
 
     else:
-        form = PartidaForm()
 
-    contexto = {
-        "form": form,
-        "titulo": "Cadastrar partida",
-    }
+        form = PartidaForm()
 
     return render(
         request,
         "campeonatos/formulario.html",
-        contexto,
+        {
+            "form": form,
+            "titulo": "Nova partida",
+        },
     )
 
 
 # =========================================================
-# ELENCO
+# ELENCOS
 # =========================================================
 
 def elenco_listar(request):
-    jogadores = JogadorTime.objects.all()
 
-    contexto = {
-        "jogadores": jogadores,
-    }
+    jogadores = JogadorTime.objects.all()
 
     return render(
         request,
         "campeonatos/elenco_listar.html",
-        contexto,
+        {
+            "jogadores": jogadores,
+        },
     )
 
 
+@login_required
 def elenco_criar(request):
+
     if request.method == "POST":
-        form = JogadorTimeForm(request.POST)
+
+        form = JogadorTimeForm(
+            request.POST
+        )
 
         if form.is_valid():
+
             form.save()
 
             return redirect(
@@ -329,15 +494,16 @@ def elenco_criar(request):
             )
 
     else:
-        form = JogadorTimeForm()
 
-    contexto = {
-        "form": form,
-        "titulo": "Adicionar jogador ao elenco",
-    }
+        form = JogadorTimeForm()
 
     return render(
         request,
         "campeonatos/formulario.html",
-        contexto,
+        {
+            "form": form,
+            "titulo": (
+                "Adicionar jogador ao elenco"
+            ),
+        },
     )
