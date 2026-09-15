@@ -1,7 +1,9 @@
 <!DOCTYPE html>
+
 <html lang="pt-br">
 
 <head>
+
     <meta charset="UTF-8">
 
     <meta
@@ -11,41 +13,79 @@
 
     <title>
         {% block title %}
-            LigaHub
+        LigaHub
         {% endblock %}
     </title>
 
+
     <style>
+
         body {
-            font-family: Arial, sans-serif;
             margin: 0;
-            background: #f4f4f4;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
             color: #222;
         }
 
+
         header {
-            background: #1b5e20;
+            background-color: #1f2937;
             color: white;
-            padding: 18px 30px;
+            padding: 20px;
         }
 
+
         nav {
-            margin-top: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
         }
+
 
         nav a {
             color: white;
-            margin-right: 18px;
             text-decoration: none;
         }
+
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+
+        .usuario {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
 
         main {
             max-width: 1100px;
             margin: 30px auto;
-            background: white;
-            padding: 30px;
-            border-radius: 8px;
+            padding: 20px;
+            background-color: white;
         }
+
+
+        .botao {
+            display: inline-block;
+            background-color: #1f2937;
+            color: white;
+            padding: 10px 16px;
+            border: none;
+            text-decoration: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+
+        .botao:hover {
+            opacity: 0.9;
+        }
+
 
         table {
             width: 100%;
@@ -53,63 +93,59 @@
             margin-top: 20px;
         }
 
+
         th,
         td {
-            padding: 12px;
-            border-bottom: 1px solid #ddd;
+            border: 1px solid #ddd;
+            padding: 10px;
             text-align: left;
         }
 
+
         th {
-            background: #eeeeee;
+            background-color: #eee;
         }
 
-        .botao {
-            display: inline-block;
-            background: #1b5e20;
-            color: white;
-            padding: 10px 15px;
-            text-decoration: none;
-            border-radius: 5px;
-            border: none;
-            cursor: pointer;
-        }
-
-        .acoes {
-            margin: 20px 0;
-        }
-
-        form p {
-            margin-bottom: 18px;
-        }
-
-        form input,
-        form select,
-        form textarea {
-            width: 100%;
-            max-width: 500px;
-            padding: 9px;
-            box-sizing: border-box;
-        }
-
-        .erro {
-            color: #b00020;
-        }
 
         .escudo {
             width: 50px;
             height: 50px;
             object-fit: contain;
         }
+
+
+        .logout-form {
+            display: inline;
+            margin: 0;
+        }
+
+
+        .logout {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 0;
+            font-size: inherit;
+        }
+
+
+        .logout:hover {
+            text-decoration: underline;
+        }
+
     </style>
+
 </head>
 
 
 <body>
 
+
 <header>
 
-    <strong>LigaHub</strong>
+    <h1>LigaHub</h1>
+
 
     <nav>
 
@@ -117,45 +153,102 @@
             Início
         </a>
 
+
         <a href="{% url 'campeonatos:campeonato_listar' %}">
             Campeonatos
         </a>
+
 
         <a href="{% url 'campeonatos:time_listar' %}">
             Times
         </a>
 
+
         <a href="{% url 'campeonatos:pessoa_listar' %}">
             Pessoas
         </a>
+
 
         <a href="{% url 'campeonatos:estadio_listar' %}">
             Estádios
         </a>
 
+
         <a href="{% url 'campeonatos:inscricao_listar' %}">
             Inscrições
         </a>
+
 
         <a href="{% url 'campeonatos:partida_listar' %}">
             Partidas
         </a>
 
+
         <a href="{% url 'campeonatos:elenco_listar' %}">
             Elencos
         </a>
+
+
+
+        <div class="usuario">
+
+            {% if request.user.is_authenticated %}
+
+                <span>
+                    Usuário:
+                    {{ request.user.username }}
+                </span>
+
+
+                <form
+                    method="post"
+                    action="{% url 'campeonatos:logout' %}"
+                    class="logout-form"
+                >
+
+                    {% csrf_token %}
+
+                    <button
+                        type="submit"
+                        class="logout"
+                    >
+                        Sair
+                    </button>
+
+                </form>
+
+
+            {% else %}
+
+
+                <a href="{% url 'campeonatos:login' %}">
+                    Entrar
+                </a>
+
+
+                <a href="{% url 'campeonatos:criar_conta' %}">
+                    Criar conta
+                </a>
+
+
+            {% endif %}
+
+        </div>
 
     </nav>
 
 </header>
 
 
+
 <main>
 
     {% block content %}
+
     {% endblock %}
 
 </main>
+
 
 </body>
 
