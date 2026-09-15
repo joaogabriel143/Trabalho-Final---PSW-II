@@ -132,3 +132,7 @@ MAILERS = {
 }
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
+
+LOGIN_URL = "campeonatos:login"
+LOGIN_REDIRECT_URL = "campeonatos:inicio"
+LOGOUT_REDIRECT_URL = "campeonatos:inicio"
