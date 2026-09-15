@@ -1,12 +1,17 @@
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import (
+    login_required,
+    permission_required,
+)
 
 from django.contrib.auth.forms import (
     AuthenticationForm,
     UserCreationForm,
 )
+
+from django.contrib.auth.models import Permission
 
 from django.shortcuts import redirect, render
 
@@ -128,7 +133,17 @@ def criar_conta(request):
 
         if form.is_valid():
 
-            form.save()
+            usuario = form.save()
+
+            # Todo usuário que cria uma conta no LigaHub
+            # poderá gerenciar os dados do sistema.
+            permissoes = Permission.objects.filter(
+                content_type__app_label="campeonatos"
+            )
+
+            usuario.user_permissions.add(
+                *permissoes
+            )
 
             return redirect(
                 "campeonatos:login"
@@ -174,6 +189,7 @@ def inicio(request):
 # CAMPEONATOS
 # =========================================================
 
+@login_required
 def campeonato_listar(request):
 
     campeonatos = Campeonato.objects.all()
@@ -188,6 +204,10 @@ def campeonato_listar(request):
 
 
 @login_required
+@permission_required(
+    "campeonatos.add_campeonato",
+    raise_exception=True,
+)
 def campeonato_criar(request):
 
     if request.method == "POST":
@@ -222,6 +242,7 @@ def campeonato_criar(request):
 # PESSOAS
 # =========================================================
 
+@login_required
 def pessoa_listar(request):
 
     pessoas = Pessoa.objects.all()
@@ -236,6 +257,10 @@ def pessoa_listar(request):
 
 
 @login_required
+@permission_required(
+    "campeonatos.add_pessoa",
+    raise_exception=True,
+)
 def pessoa_criar(request):
 
     if request.method == "POST":
@@ -270,6 +295,7 @@ def pessoa_criar(request):
 # ESTÁDIOS
 # =========================================================
 
+@login_required
 def estadio_listar(request):
 
     estadios = Estadio.objects.all()
@@ -284,6 +310,10 @@ def estadio_listar(request):
 
 
 @login_required
+@permission_required(
+    "campeonatos.add_estadio",
+    raise_exception=True,
+)
 def estadio_criar(request):
 
     if request.method == "POST":
@@ -318,6 +348,7 @@ def estadio_criar(request):
 # TIMES
 # =========================================================
 
+@login_required
 def time_listar(request):
 
     times = Time.objects.all()
@@ -332,6 +363,10 @@ def time_listar(request):
 
 
 @login_required
+@permission_required(
+    "campeonatos.add_time",
+    raise_exception=True,
+)
 def time_criar(request):
 
     if request.method == "POST":
@@ -367,6 +402,7 @@ def time_criar(request):
 # INSCRIÇÕES
 # =========================================================
 
+@login_required
 def inscricao_listar(request):
 
     inscricoes = Inscricao.objects.all()
@@ -381,6 +417,10 @@ def inscricao_listar(request):
 
 
 @login_required
+@permission_required(
+    "campeonatos.add_inscricao",
+    raise_exception=True,
+)
 def inscricao_criar(request):
 
     if request.method == "POST":
@@ -415,6 +455,7 @@ def inscricao_criar(request):
 # PARTIDAS
 # =========================================================
 
+@login_required
 def partida_listar(request):
 
     partidas = Partida.objects.all()
@@ -429,6 +470,10 @@ def partida_listar(request):
 
 
 @login_required
+@permission_required(
+    "campeonatos.add_partida",
+    raise_exception=True,
+)
 def partida_criar(request):
 
     if request.method == "POST":
@@ -463,6 +508,7 @@ def partida_criar(request):
 # ELENCOS
 # =========================================================
 
+@login_required
 def elenco_listar(request):
 
     jogadores = JogadorTime.objects.all()
@@ -477,6 +523,10 @@ def elenco_listar(request):
 
 
 @login_required
+@permission_required(
+    "campeonatos.add_jogadortime",
+    raise_exception=True,
+)
 def elenco_criar(request):
 
     if request.method == "POST":
