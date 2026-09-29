@@ -1,140 +1,38 @@
-<!DOCTYPE html>
+{% load static %}
+
+<!doctype html>
 
 <html lang="pt-br">
 
 <head>
 
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
 
     <meta
         name="viewport"
-        content="width=device-width, initial-scale=1.0"
+        content="width=device-width, initial-scale=1"
     >
+
 
     <title>
         {% block title %}
-        LigaHub
+            LigaHub
         {% endblock %}
     </title>
 
 
-    <style>
-
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            color: #222;
-        }
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+        crossorigin="anonymous"
+    >
 
 
-        header {
-            background-color: #1f2937;
-            color: white;
-            padding: 20px;
-        }
-
-
-        nav {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            align-items: center;
-        }
-
-
-        nav a {
-            color: white;
-            text-decoration: none;
-        }
-
-
-        nav a:hover {
-            text-decoration: underline;
-        }
-
-
-        .usuario {
-            margin-left: auto;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-
-        main {
-            max-width: 1100px;
-            margin: 30px auto;
-            padding: 20px;
-            background-color: white;
-        }
-
-
-        .botao {
-            display: inline-block;
-            background-color: #1f2937;
-            color: white;
-            padding: 10px 16px;
-            border: none;
-            text-decoration: none;
-            cursor: pointer;
-            border-radius: 4px;
-        }
-
-
-        .botao:hover {
-            opacity: 0.9;
-        }
-
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-
-        th,
-        td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: left;
-        }
-
-
-        th {
-            background-color: #eee;
-        }
-
-
-        .escudo {
-            width: 50px;
-            height: 50px;
-            object-fit: contain;
-        }
-
-
-        .logout-form {
-            display: inline;
-            margin: 0;
-        }
-
-
-        .logout {
-            background: none;
-            border: none;
-            color: white;
-            cursor: pointer;
-            padding: 0;
-            font-size: inherit;
-        }
-
-
-        .logout:hover {
-            text-decoration: underline;
-        }
-
-    </style>
+    <link
+        rel="stylesheet"
+        href="{% static 'campeonatos/css/ligahub.css' %}"
+    >
 
 </head>
 
@@ -142,112 +40,291 @@
 <body>
 
 
-<header>
+<nav
+    class="navbar navbar-expand-lg navbar-dark navbar-ligahub"
+>
 
-    <h1>LigaHub</h1>
-
-
-    <nav>
-
-        <a href="{% url 'campeonatos:inicio' %}">
-            Início
-        </a>
+    <div class="container">
 
 
-        <a href="{% url 'campeonatos:campeonato_listar' %}">
-            Campeonatos
-        </a>
+        <a
+    class="navbar-brand marca-ligahub"
+    href="{% url 'campeonatos:inicio' %}"
+>
+
+    <img
+        src="{% static 'campeonatos/img/logo-ligahub.png' %}"
+        alt="LigaHub"
+        class="logo-ligahub"
+    >
+
+</a>
 
 
-        <a href="{% url 'campeonatos:time_listar' %}">
-            Times
-        </a>
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarLigaHub"
+            aria-controls="navbarLigaHub"
+            aria-expanded="false"
+            aria-label="Abrir navegação"
+        >
+
+            <span class="navbar-toggler-icon"></span>
+
+        </button>
 
 
-        <a href="{% url 'campeonatos:pessoa_listar' %}">
-            Pessoas
-        </a>
+        <div
+            class="collapse navbar-collapse"
+            id="navbarLigaHub"
+        >
 
-
-        <a href="{% url 'campeonatos:estadio_listar' %}">
-            Estádios
-        </a>
-
-
-        <a href="{% url 'campeonatos:inscricao_listar' %}">
-            Inscrições
-        </a>
-
-
-        <a href="{% url 'campeonatos:partida_listar' %}">
-            Partidas
-        </a>
-
-
-        <a href="{% url 'campeonatos:elenco_listar' %}">
-            Elencos
-        </a>
-
-
-
-        <div class="usuario">
 
             {% if request.user.is_authenticated %}
 
-                <span>
-                    Usuário:
-                    {{ request.user.username }}
-                </span>
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+                    <li class="nav-item">
+
+                        <a
+                            class="nav-link"
+                            href="{% url 'campeonatos:campeonato_listar' %}"
+                        >
+                            Campeonatos
+                        </a>
+
+                    </li>
 
 
-                <form
-                    method="post"
-                    action="{% url 'campeonatos:logout' %}"
-                    class="logout-form"
+                    <li class="nav-item">
+
+                        <a
+                            class="nav-link"
+                            href="{% url 'campeonatos:time_listar' %}"
+                        >
+                            Times
+                        </a>
+
+                    </li>
+
+
+                    <li class="nav-item">
+
+                        <a
+                            class="nav-link"
+                            href="{% url 'campeonatos:partida_listar' %}"
+                        >
+                            Partidas
+                        </a>
+
+                    </li>
+
+
+                    <li class="nav-item">
+
+                        <a
+                            class="nav-link"
+                            href="{% url 'campeonatos:pessoa_listar' %}"
+                        >
+                            Pessoas
+                        </a>
+
+                    </li>
+
+
+                    <li class="nav-item dropdown">
+
+                        <a
+                            class="nav-link dropdown-toggle"
+                            href="#"
+                            role="button"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                        >
+                            Mais
+                        </a>
+
+
+                        <ul class="dropdown-menu">
+
+                            <li>
+
+                                <a
+                                    class="dropdown-item"
+                                    href="{% url 'campeonatos:estadio_listar' %}"
+                                >
+                                    Estádios
+                                </a>
+
+                            </li>
+
+
+                            <li>
+
+                                <a
+                                    class="dropdown-item"
+                                    href="{% url 'campeonatos:inscricao_listar' %}"
+                                >
+                                    Inscrições
+                                </a>
+
+                            </li>
+
+
+                            <li>
+
+                                <a
+                                    class="dropdown-item"
+                                    href="{% url 'campeonatos:elenco_listar' %}"
+                                >
+                                    Elencos
+                                </a>
+
+                            </li>
+
+                        </ul>
+
+                    </li>
+
+                </ul>
+
+
+                <div
+                    class="d-flex align-items-center gap-3 mt-3 mt-lg-0"
                 >
 
-                    {% csrf_token %}
+                    <span class="text-white-50 small">
+                        {{ request.user.username }}
+                    </span>
 
-                    <button
-                        type="submit"
-                        class="logout"
+
+                    <form
+                        method="post"
+                        action="{% url 'campeonatos:logout' %}"
+                        class="m-0"
                     >
-                        Sair
-                    </button>
 
-                </form>
+                        {% csrf_token %}
+
+                        <button
+                            type="submit"
+                            class="btn btn-outline-light btn-sm"
+                        >
+                            Sair
+                        </button>
+
+                    </form>
+
+                </div>
 
 
             {% else %}
 
 
-                <a href="{% url 'campeonatos:login' %}">
-                    Entrar
-                </a>
+                <div
+                    class="ms-auto d-flex gap-2 mt-3 mt-lg-0"
+                >
+
+                    <a
+                        class="btn btn-outline-light btn-sm"
+                        href="{% url 'campeonatos:login' %}"
+                    >
+                        Entrar
+                    </a>
 
 
-                <a href="{% url 'campeonatos:criar_conta' %}">
-                    Criar conta
-                </a>
+                    <a
+                        class="btn btn-light btn-sm"
+                        href="{% url 'campeonatos:criar_conta' %}"
+                    >
+                        Criar conta
+                    </a>
+
+                </div>
 
 
             {% endif %}
 
+
         </div>
 
-    </nav>
+    </div>
 
-</header>
+</nav>
 
 
 
-<main>
+<main class="container main-ligahub">
+
+
+    {% if messages %}
+
+        {% for message in messages %}
+
+            <div
+                class="
+                    alert
+                    {% if message.tags == 'error' %}
+                        alert-danger
+                    {% elif message.tags %}
+                        alert-{{ message.tags }}
+                    {% else %}
+                        alert-info
+                    {% endif %}
+                    alert-dismissible
+                    fade
+                    show
+                "
+                role="alert"
+            >
+
+                {{ message }}
+
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Fechar"
+                ></button>
+
+            </div>
+
+        {% endfor %}
+
+    {% endif %}
+
+
 
     {% block content %}
 
     {% endblock %}
 
+
 </main>
+
+
+
+<footer class="footer-ligahub">
+
+    <div class="container">
+
+        LigaHub —
+        gerenciamento de campeonatos de futebol.
+
+    </div>
+
+</footer>
+
+
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+    crossorigin="anonymous"
+></script>
 
 
 </body>

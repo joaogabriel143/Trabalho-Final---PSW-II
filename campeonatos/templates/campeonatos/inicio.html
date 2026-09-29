@@ -2,78 +2,257 @@
 
 
 {% block title %}
-    LigaHub
+    LigaHub | Campeonatos de futebol
 {% endblock %}
 
 
 {% block content %}
 
-<h1>LigaHub</h1>
 
-<p>
-    Sistema para gerenciamento de campeonatos
-    futebolísticos no formato de pontos corridos.
-</p>
+<section class="hero-ligahub mb-5">
 
+    <div class="position-relative">
 
-<h2>Gerenciamento</h2>
-
-
-<p>
-    <a
-        class="botao"
-        href="{% url 'campeonatos:campeonato_listar' %}"
-    >
-        Campeonatos
-    </a>
-
-    <a
-        class="botao"
-        href="{% url 'campeonatos:time_listar' %}"
-    >
-        Times
-    </a>
-
-    <a
-        class="botao"
-        href="{% url 'campeonatos:pessoa_listar' %}"
-    >
-        Pessoas
-    </a>
-</p>
+        <p
+            class="
+                text-uppercase
+                small
+                fw-semibold
+                mb-2
+            "
+        >
+            Gerenciamento de campeonatos
+        </p>
 
 
-<p>
-    <a
-        class="botao"
-        href="{% url 'campeonatos:estadio_listar' %}"
-    >
-        Estádios
-    </a>
-
-    <a
-        class="botao"
-        href="{% url 'campeonatos:elenco_listar' %}"
-    >
-        Elencos
-    </a>
-</p>
+        <h1>
+            Organize o campeonato.
+            O futebol fica em campo.
+        </h1>
 
 
-<p>
-    <a
-        class="botao"
-        href="{% url 'campeonatos:inscricao_listar' %}"
-    >
-        Inscrições
-    </a>
+        <p>
 
-    <a
-        class="botao"
-        href="{% url 'campeonatos:partida_listar' %}"
-    >
-        Partidas
-    </a>
-</p>
+            Gerencie times, jogadores, estádios,
+            rodadas e resultados em campeonatos
+            de pontos corridos.
+
+        </p>
+
+
+
+        {% if request.user.is_authenticated %}
+
+            <div class="d-flex flex-wrap gap-2">
+
+                <a
+                    class="btn btn-light"
+                    href="{% url 'campeonatos:campeonato_listar' %}"
+                >
+                    Ver campeonatos
+                </a>
+
+
+                {% if perms.campeonatos.add_campeonato %}
+
+                    <a
+                        class="btn btn-outline-light"
+                        href="{% url 'campeonatos:campeonato_criar' %}"
+                    >
+                        Novo campeonato
+                    </a>
+
+                {% endif %}
+
+            </div>
+
+
+        {% else %}
+
+
+            <div class="d-flex flex-wrap gap-2">
+
+                <a
+                    class="btn btn-light"
+                    href="{% url 'campeonatos:login' %}"
+                >
+                    Entrar
+                </a>
+
+
+                <a
+                    class="btn btn-outline-light"
+                    href="{% url 'campeonatos:criar_conta' %}"
+                >
+                    Criar conta
+                </a>
+
+            </div>
+
+
+        {% endif %}
+
+    </div>
+
+</section>
+
+
+
+{% if request.user.is_authenticated %}
+
+
+<section class="mb-5">
+
+    <div class="mb-3">
+
+        <h2 class="h4 fw-bold mb-1">
+            Acesso rápido
+        </h2>
+
+        <p class="texto-secundario mb-0">
+            Continue o gerenciamento do LigaHub.
+        </p>
+
+    </div>
+
+
+    <div class="row g-3">
+
+
+        <div class="col-md-4">
+
+            <a
+                class="card-ligahub card-acesso"
+                href="{% url 'campeonatos:campeonato_listar' %}"
+            >
+
+                <h3>
+                    Campeonatos
+                </h3>
+
+                <p>
+                    Participantes, temporada,
+                    partidas e organização.
+                </p>
+
+            </a>
+
+        </div>
+
+
+        <div class="col-md-4">
+
+            <a
+                class="card-ligahub card-acesso"
+                href="{% url 'campeonatos:time_listar' %}"
+            >
+
+                <h3>
+                    Times
+                </h3>
+
+                <p>
+                    Clubes, técnicos,
+                    escudos e elencos.
+                </p>
+
+            </a>
+
+        </div>
+
+
+        <div class="col-md-4">
+
+            <a
+                class="card-ligahub card-acesso"
+                href="{% url 'campeonatos:partida_listar' %}"
+            >
+
+                <h3>
+                    Partidas
+                </h3>
+
+                <p>
+                    Rodadas, confrontos,
+                    locais e resultados.
+                </p>
+
+            </a>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+{% endif %}
+
+
+
+<section>
+
+    <div class="row g-3">
+
+
+        <div class="col-md-4">
+
+            <div class="card-ligahub">
+
+                <h2>
+                    Pontos corridos
+                </h2>
+
+                <p>
+                    Estrutura pensada para campeonatos
+                    de turno e returno.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-md-4">
+
+            <div class="card-ligahub">
+
+                <h2>
+                    Organização centralizada
+                </h2>
+
+                <p>
+                    Times, estádios, pessoas e partidas
+                    reunidos em um único sistema.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-md-4">
+
+            <div class="card-ligahub">
+
+                <h2>
+                    Resultados e classificação
+                </h2>
+
+                <p>
+                    Os resultados das partidas serão usados
+                    para calcular a tabela do campeonato.
+                </p>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</section>
+
 
 {% endblock %}
