@@ -1,0 +1,382 @@
+{% extends "campeonatos/base.html" %}
+
+
+{% block title %}
+    {{ campeonato.nome }} | LigaHub
+{% endblock %}
+
+
+{% block content %}
+
+
+<div class="detail-topo">
+
+    <div>
+
+        <div class="d-flex align-items-center gap-2 mb-2">
+
+            <span class="badge text-bg-success">
+                Temporada {{ campeonato.temporada }}
+            </span>
+
+
+            {% if campeonato.ativo %}
+
+                <span class="badge status-ativo">
+                    Ativo
+                </span>
+
+            {% else %}
+
+                <span class="badge text-bg-secondary">
+                    Encerrado
+                </span>
+
+            {% endif %}
+
+        </div>
+
+
+        <h1 class="detail-titulo">
+            {{ campeonato.nome }}
+        </h1>
+
+
+        <p class="texto-secundario mb-0">
+
+            {{ campeonato.data_inicio|date:"d/m/Y" }}
+
+            até
+
+            {{ campeonato.data_fim|date:"d/m/Y" }}
+
+        </p>
+
+    </div>
+
+
+    <a
+        class="btn btn-outline-secondary"
+        href="{% url 'campeonatos:campeonato_listar' %}"
+    >
+        Voltar
+    </a>
+
+</div>
+
+
+
+<div class="row g-3 mb-4">
+
+
+    <div class="col-6 col-lg-3">
+
+        <div class="resumo-card">
+
+            <span class="resumo-valor">
+                {{ campeonato.quantidade_times }}
+            </span>
+
+            <span class="resumo-legenda">
+                Times
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div class="col-6 col-lg-3">
+
+        <div class="resumo-card">
+
+            <span class="resumo-valor">
+                {{ campeonato.total_rodadas_previstas }}
+            </span>
+
+            <span class="resumo-legenda">
+                Rodadas previstas
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div class="col-6 col-lg-3">
+
+        <div class="resumo-card">
+
+            <span class="resumo-valor">
+                {{ campeonato.total_partidas_previstas }}
+            </span>
+
+            <span class="resumo-legenda">
+                Partidas previstas
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div class="col-6 col-lg-3">
+
+        <div class="resumo-card">
+
+            <span class="resumo-valor">
+                {{ partidas_realizadas }}
+            </span>
+
+            <span class="resumo-legenda">
+                Partidas realizadas
+            </span>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+
+<div class="detail-card mb-4">
+
+    <div class="detail-card-cabecalho">
+
+        <h2>
+            Sobre o campeonato
+        </h2>
+
+    </div>
+
+
+    <div class="detail-card-conteudo">
+
+        {% if campeonato.descricao %}
+
+            <p class="mb-0">
+                {{ campeonato.descricao }}
+            </p>
+
+        {% else %}
+
+            <p class="texto-secundario mb-0">
+                Nenhuma descrição informada.
+            </p>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+
+
+<div class="detail-card mb-4">
+
+    <div class="detail-card-cabecalho">
+
+        <div>
+
+            <h2>
+                Times participantes
+            </h2>
+
+            <p>
+                Clubes inscritos nesta competição.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="detail-card-conteudo">
+
+        {% if inscricoes %}
+
+            <div class="row g-3">
+
+                {% for inscricao in inscricoes %}
+
+                    <div class="col-md-6 col-lg-4">
+
+                        <a
+                            class="time-mini-card"
+                            href="{% url 'campeonatos:time_detalhar' inscricao.time.pk %}"
+                        >
+
+                            {% if inscricao.time.escudo %}
+
+                                <img
+                                    src="{{ inscricao.time.escudo.url }}"
+                                    alt="Escudo de {{ inscricao.time.nome }}"
+                                >
+
+                            {% endif %}
+
+
+                            <div>
+
+                                <strong>
+                                    {{ inscricao.time.nome }}
+                                </strong>
+
+                                <span>
+                                    {{ inscricao.time.cidade }}
+                                </span>
+
+                            </div>
+
+                        </a>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <p class="texto-secundario mb-0">
+                Nenhum time inscrito neste campeonato.
+            </p>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+
+
+<div class="detail-card">
+
+    <div class="detail-card-cabecalho">
+
+        <div>
+
+            <h2>
+                Partidas
+            </h2>
+
+            <p>
+                Jogos cadastrados no campeonato.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="detail-card-conteudo p-0">
+
+        {% if partidas %}
+
+            <div class="table-responsive">
+
+                <table class="table-detail mb-0">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Rodada</th>
+                            <th>Data</th>
+                            <th>Mandante</th>
+                            <th>Placar</th>
+                            <th>Visitante</th>
+                            <th></th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for partida in partidas %}
+
+                            <tr>
+
+                                <td>
+                                    {{ partida.rodada }}
+                                </td>
+
+
+                                <td>
+                                    {{ partida.data|date:"d/m/Y" }}
+                                </td>
+
+
+                                <td>
+                                    {{ partida.time_mandante.nome }}
+                                </td>
+
+
+                                <td class="placar">
+
+                                    {% if partida.realizada %}
+
+                                        {{ partida.gols_mandante }}
+                                        ×
+                                        {{ partida.gols_visitante }}
+
+                                    {% else %}
+
+                                        —
+                                        ×
+                                        —
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <td>
+                                    {{ partida.time_visitante.nome }}
+                                </td>
+
+
+                                <td class="text-end">
+
+                                    <a
+                                        class="link-detalhe"
+                                        href="{% url 'campeonatos:partida_detalhar' partida.pk %}"
+                                    >
+                                        Ver
+                                    </a>
+
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+        {% else %}
+
+            <div class="p-4">
+
+                <p class="texto-secundario mb-0">
+                    Nenhuma partida cadastrada.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+
+{% endblock %}

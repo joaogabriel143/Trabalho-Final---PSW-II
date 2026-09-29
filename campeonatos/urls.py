@@ -53,6 +53,12 @@ urlpatterns = [
     ),
 
     path(
+    "campeonatos/<int:pk>/",
+    views.campeonato_detalhar,
+    name="campeonato_detalhar",
+),
+
+    path(
         "campeonatos/novo/",
         views.campeonato_criar,
         name="campeonato_criar",
@@ -68,6 +74,12 @@ urlpatterns = [
         views.pessoa_listar,
         name="pessoa_listar",
     ),
+
+    path(
+    "pessoas/<int:pk>/",
+    views.pessoa_detalhar,
+    name="pessoa_detalhar",
+),
 
     path(
         "pessoas/nova/",
@@ -87,6 +99,12 @@ urlpatterns = [
     ),
 
     path(
+    "estadios/<int:pk>/",
+    views.estadio_detalhar,
+    name="estadio_detalhar",
+),
+
+    path(
         "estadios/novo/",
         views.estadio_criar,
         name="estadio_criar",
@@ -102,6 +120,12 @@ urlpatterns = [
         views.time_listar,
         name="time_listar",
     ),
+
+    path(
+    "times/<int:pk>/",
+    views.time_detalhar,
+    name="time_detalhar",
+),
 
     path(
         "times/novo/",
@@ -136,6 +160,12 @@ urlpatterns = [
         views.partida_listar,
         name="partida_listar",
     ),
+
+    path(
+    "partidas/<int:pk>/",
+    views.partida_detalhar,
+    name="partida_detalhar",
+),
 
     path(
         "partidas/nova/",

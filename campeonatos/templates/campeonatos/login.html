@@ -2,58 +2,96 @@
 
 
 {% block title %}
-
-Entrar - LigaHub
-
+    Entrar | LigaHub
 {% endblock %}
 
 
 {% block content %}
 
-<h1>Entrar</h1>
 
-<p>
-    Entre com sua conta para gerenciar
-    os campeonatos.
-</p>
+<div class="row justify-content-center">
+
+    <div class="col-lg-6">
 
 
-<form method="post">
+        <div class="mb-4">
 
-    {% csrf_token %}
+            <h1 class="h3 fw-bold mb-1">
+                Entrar
+            </h1>
 
-    {{ form.non_field_errors }}
+            <p class="texto-secundario">
+                Acesse sua conta para gerenciar
+                seus campeonatos.
+            </p>
 
-    {{ form.as_p }}
-
-
-    {% if next %}
-
-        <input
-            type="hidden"
-            name="next"
-            value="{{ next }}"
-        >
-
-    {% endif %}
+        </div>
 
 
-    <button
-        class="botao"
-        type="submit"
-    >
-        Entrar
-    </button>
-
-</form>
+        <div class="form-card">
 
 
-<p>
-    Ainda não possui uma conta?
+            {% if form.non_field_errors %}
 
-    <a href="{% url 'campeonatos:criar_conta' %}">
-        Criar conta
-    </a>
-</p>
+                <div class="alert alert-danger">
+
+                    {{ form.non_field_errors }}
+
+                </div>
+
+            {% endif %}
+
+
+            <form method="post">
+
+                {% csrf_token %}
+
+
+                {{ form.as_p }}
+
+
+                {% if next %}
+
+                    <input
+                        type="hidden"
+                        name="next"
+                        value="{{ next }}"
+                    >
+
+                {% endif %}
+
+
+                <button
+                    class="btn btn-ligahub w-100"
+                    type="submit"
+                >
+                    Entrar
+                </button>
+
+            </form>
+
+
+            <hr>
+
+
+            <p class="mb-0 text-center texto-secundario">
+
+                Ainda não possui uma conta?
+
+                <a
+                    href="{% url 'campeonatos:criar_conta' %}"
+                >
+                    Criar conta
+                </a>
+
+            </p>
+
+
+        </div>
+
+    </div>
+
+</div>
+
 
 {% endblock %}

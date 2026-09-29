@@ -1,0 +1,1484 @@
+:root {
+    --ligahub-verde: #18794e;
+    --ligahub-verde-hover: #12613e;
+    --ligahub-verde-escuro: #0b3523;
+    --ligahub-verde-profundo: #07291b;
+    --ligahub-verde-claro: #34a86f;
+
+    --ligahub-fundo: #f4f7f5;
+    --ligahub-superficie: #ffffff;
+    --ligahub-superficie-secundaria: #f8faf9;
+
+    --ligahub-texto: #17231c;
+    --ligahub-texto-suave: #68776e;
+
+    --ligahub-borda: #dfe7e2;
+
+    --ligahub-sombra:
+        0 8px 30px rgba(13, 59, 38, 0.07);
+
+    --ligahub-sombra-hover:
+        0 14px 35px rgba(13, 59, 38, 0.12);
+}
+
+
+/* =========================================================
+   GERAL
+   ========================================================= */
+
+html {
+    scroll-behavior: smooth;
+}
+
+
+body {
+    min-height: 100vh;
+
+    margin: 0;
+
+    background:
+        radial-gradient(
+            circle at top left,
+            rgba(52, 168, 111, 0.06),
+            transparent 28rem
+        ),
+        var(--ligahub-fundo);
+
+    color: var(--ligahub-texto);
+
+    font-family:
+        Inter,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+    line-height: 1.6;
+}
+
+
+a {
+    color: var(--ligahub-verde);
+    text-decoration: none;
+}
+
+
+a:hover {
+    color: var(--ligahub-verde-hover);
+}
+
+
+.main-ligahub {
+    max-width: 1180px;
+
+    padding-top: 2.5rem;
+    padding-bottom: 4rem;
+}
+
+
+/* =========================================================
+   NAVBAR
+   ========================================================= */
+
+.navbar-ligahub {
+    position: relative;
+
+    background:
+        linear-gradient(
+            110deg,
+            var(--ligahub-verde-profundo),
+            var(--ligahub-verde-escuro)
+        );
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
+    box-shadow:
+        0 4px 18px rgba(7, 41, 27, 0.18);
+}
+
+
+.navbar-ligahub::after {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    height: 2px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            var(--ligahub-verde-claro),
+            transparent
+        );
+
+    opacity: 0.7;
+}
+
+
+.navbar-ligahub .container {
+    min-height: 64px;
+}
+
+
+.navbar-ligahub .navbar-brand {
+    font-weight: 750;
+
+    letter-spacing: -0.04rem;
+}
+
+
+.marca-ligahub {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 0.7rem;
+}
+
+
+.marca-simbolo {
+    width: 34px;
+    height: 34px;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background-color: rgba(255, 255, 255, 0.08);
+
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 10px;
+
+    font-size: 0.72rem;
+    font-weight: 800;
+
+    letter-spacing: 0.03rem;
+
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+}
+
+
+.navbar-ligahub .nav-link {
+    position: relative;
+
+    padding-left: 0.8rem !important;
+    padding-right: 0.8rem !important;
+
+    color: rgba(255, 255, 255, 0.72);
+
+    font-size: 0.94rem;
+    font-weight: 500;
+
+    transition:
+        color 0.15s,
+        background-color 0.15s;
+}
+
+
+.navbar-ligahub .nav-link:hover {
+    color: #ffffff;
+}
+
+
+.navbar-ligahub .dropdown-menu {
+    padding: 0.45rem;
+
+    border: 1px solid var(--ligahub-borda);
+    border-radius: 0.7rem;
+
+    box-shadow: var(--ligahub-sombra);
+}
+
+
+.navbar-ligahub .dropdown-item {
+    border-radius: 0.45rem;
+
+    padding: 0.55rem 0.7rem;
+}
+
+
+.navbar-ligahub .dropdown-item:hover {
+    background-color: #edf5f0;
+
+    color: var(--ligahub-verde-escuro);
+}
+
+
+/* =========================================================
+   BOTÕES
+   ========================================================= */
+
+.btn {
+    border-radius: 0.55rem;
+
+    font-weight: 600;
+
+    transition:
+        transform 0.15s ease,
+        box-shadow 0.15s ease,
+        background-color 0.15s ease,
+        border-color 0.15s ease;
+}
+
+
+.btn:hover {
+    transform: translateY(-1px);
+}
+
+
+.btn-ligahub {
+    background:
+        linear-gradient(
+            135deg,
+            var(--ligahub-verde),
+            #208b5c
+        );
+
+    color: #ffffff;
+
+    border-color: var(--ligahub-verde);
+
+    box-shadow:
+        0 5px 14px rgba(24, 121, 78, 0.16);
+}
+
+
+.btn-ligahub:hover {
+    background:
+        linear-gradient(
+            135deg,
+            var(--ligahub-verde-hover),
+            var(--ligahub-verde)
+        );
+
+    color: #ffffff;
+
+    border-color: var(--ligahub-verde-hover);
+
+    box-shadow:
+        0 7px 18px rgba(24, 121, 78, 0.22);
+}
+
+
+.btn-ligahub-outline {
+    background-color: transparent;
+
+    color: var(--ligahub-verde);
+
+    border: 1px solid var(--ligahub-verde);
+}
+
+
+.btn-ligahub-outline:hover {
+    background-color: var(--ligahub-verde);
+
+    color: #ffffff;
+}
+
+
+.botao {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 0.62rem 1rem;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--ligahub-verde),
+            #208b5c
+        );
+
+    color: #ffffff;
+
+    border: 1px solid var(--ligahub-verde);
+    border-radius: 0.55rem;
+
+    font-weight: 600;
+
+    box-shadow:
+        0 5px 14px rgba(24, 121, 78, 0.12);
+
+    transition:
+        transform 0.15s,
+        box-shadow 0.15s,
+        background-color 0.15s;
+}
+
+
+.botao:hover {
+    transform: translateY(-1px);
+
+    color: #ffffff;
+
+    box-shadow:
+        0 8px 18px rgba(24, 121, 78, 0.2);
+}
+
+
+/* =========================================================
+   HERO
+   ========================================================= */
+
+.hero-ligahub {
+    position: relative;
+
+    overflow: hidden;
+
+    padding: 4rem;
+
+    background:
+        linear-gradient(
+            120deg,
+            var(--ligahub-verde-profundo),
+            #105436
+        );
+
+    color: #ffffff;
+
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 1.25rem;
+
+    box-shadow:
+        0 20px 45px rgba(7, 41, 27, 0.18);
+}
+
+
+/*
+Marcações sutis inspiradas em um campo de futebol.
+Não são imagens externas.
+*/
+
+.hero-ligahub::before {
+    content: "";
+
+    position: absolute;
+
+    width: 300px;
+    height: 300px;
+
+    right: -70px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+}
+
+
+.hero-ligahub::after {
+    content: "";
+
+    position: absolute;
+
+    width: 150px;
+    height: 230px;
+
+    right: -25px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    border: 2px solid rgba(255, 255, 255, 0.08);
+}
+
+
+.hero-ligahub > * {
+    position: relative;
+
+    z-index: 2;
+}
+
+
+.hero-ligahub h1 {
+    max-width: 680px;
+
+    margin-bottom: 1.2rem;
+
+    font-size: clamp(
+        2.2rem,
+        5vw,
+        3.6rem
+    );
+
+    font-weight: 780;
+
+    line-height: 1.08;
+
+    letter-spacing: -0.12rem;
+}
+
+
+.hero-ligahub p {
+    max-width: 620px;
+
+    margin-bottom: 1.8rem;
+
+    color: rgba(255, 255, 255, 0.76);
+
+    font-size: 1.05rem;
+}
+
+
+.hero-ligahub p.text-uppercase {
+    color: #82d7aa;
+
+    letter-spacing: 0.08rem;
+}
+
+
+.hero-ligahub .btn-light {
+    color: var(--ligahub-verde-escuro);
+
+    border: 0;
+
+    font-weight: 700;
+
+    box-shadow:
+        0 7px 22px rgba(0, 0, 0, 0.12);
+}
+
+
+.hero-ligahub .btn-outline-light {
+    border-color: rgba(255, 255, 255, 0.45);
+}
+
+
+.hero-ligahub .btn-outline-light:hover {
+    color: var(--ligahub-verde-escuro);
+}
+
+
+/* =========================================================
+   CARDS
+   ========================================================= */
+
+.card-ligahub {
+    position: relative;
+
+    height: 100%;
+
+    padding: 1.6rem;
+
+    background:
+        linear-gradient(
+            180deg,
+            #ffffff,
+            #fbfcfb
+        );
+
+    border: 1px solid var(--ligahub-borda);
+    border-radius: 1rem;
+
+    box-shadow:
+        0 4px 15px rgba(13, 59, 38, 0.035);
+}
+
+
+.card-ligahub h2,
+.card-ligahub h3 {
+    margin-bottom: 0.55rem;
+
+    color: var(--ligahub-texto);
+
+    font-size: 1.08rem;
+
+    font-weight: 700;
+}
+
+
+.card-ligahub p {
+    margin-bottom: 0;
+
+    color: var(--ligahub-texto-suave);
+
+    font-size: 0.94rem;
+}
+
+
+.card-acesso {
+    display: block;
+
+    overflow: hidden;
+
+    color: var(--ligahub-texto);
+
+    text-decoration: none;
+
+    transition:
+        transform 0.18s ease,
+        box-shadow 0.18s ease,
+        border-color 0.18s ease;
+}
+
+
+.card-acesso::before {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    top: 0;
+
+    width: 4px;
+    height: 100%;
+
+    background:
+        linear-gradient(
+            var(--ligahub-verde-claro),
+            var(--ligahub-verde)
+        );
+
+    opacity: 0;
+
+    transition: opacity 0.18s;
+}
+
+
+.card-acesso:hover {
+    transform: translateY(-4px);
+
+    color: var(--ligahub-texto);
+
+    border-color: #c6ded0;
+
+    box-shadow: var(--ligahub-sombra-hover);
+}
+
+
+.card-acesso:hover::before {
+    opacity: 1;
+}
+
+
+/* =========================================================
+   CABEÇALHOS DAS PÁGINAS
+   ========================================================= */
+
+.cabecalho-pagina {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 1rem;
+
+    margin-bottom: 1.8rem;
+}
+
+
+.cabecalho-pagina h1 {
+    position: relative;
+
+    margin-bottom: 0;
+
+    padding-left: 0.9rem;
+
+    font-size: 1.85rem;
+
+    font-weight: 750;
+
+    letter-spacing: -0.04rem;
+}
+
+
+.cabecalho-pagina h1::before {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    top: 50%;
+
+    width: 4px;
+    height: 70%;
+
+    transform: translateY(-50%);
+
+    background-color: var(--ligahub-verde);
+
+    border-radius: 5px;
+}
+
+
+.texto-secundario {
+    color: var(--ligahub-texto-suave);
+}
+
+
+/* =========================================================
+   TABELAS
+   ========================================================= */
+
+table {
+    width: 100%;
+
+    overflow: hidden;
+
+    margin-top: 1.25rem;
+
+    background-color: #ffffff;
+
+    border-collapse: separate;
+    border-spacing: 0;
+
+    border: 1px solid var(--ligahub-borda);
+    border-radius: 0.9rem;
+
+    box-shadow:
+        0 4px 18px rgba(13, 59, 38, 0.035);
+}
+
+
+th {
+    padding: 0.9rem 1rem;
+
+    background:
+        linear-gradient(
+            180deg,
+            #f2f6f3,
+            #edf2ef
+        );
+
+    color: #47554c;
+
+    font-size: 0.76rem;
+
+    font-weight: 750;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.045rem;
+
+    border-bottom: 1px solid var(--ligahub-borda);
+}
+
+
+td {
+    padding: 1rem;
+
+    background-color: #ffffff;
+
+    border-bottom: 1px solid #edf1ee;
+
+    vertical-align: middle;
+
+    transition:
+        background-color 0.12s;
+}
+
+
+tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+
+tbody tr:hover td {
+    background-color: #f7faf8;
+}
+
+
+.escudo {
+    width: 48px;
+    height: 48px;
+
+    padding: 3px;
+
+    object-fit: contain;
+
+    background-color: #ffffff;
+
+    border: 1px solid #e5ebe7;
+    border-radius: 0.5rem;
+}
+
+
+/* =========================================================
+   FORMULÁRIOS
+   ========================================================= */
+
+.form-card {
+    max-width: 760px;
+
+    padding: 2rem;
+
+    background:
+        linear-gradient(
+            180deg,
+            #ffffff,
+            #fcfdfc
+        );
+
+    border: 1px solid var(--ligahub-borda);
+    border-radius: 1rem;
+
+    box-shadow: var(--ligahub-sombra);
+}
+
+
+.form-card p {
+    margin-bottom: 1.25rem;
+}
+
+
+.form-card label {
+    display: block;
+
+    margin-bottom: 0.45rem;
+
+    color: #39483f;
+
+    font-size: 0.9rem;
+
+    font-weight: 650;
+}
+
+
+.form-card input:not([type="checkbox"]),
+.form-card select,
+.form-card textarea {
+    display: block;
+
+    width: 100%;
+
+    padding: 0.72rem 0.85rem;
+
+    background-color: #ffffff;
+
+    color: var(--ligahub-texto);
+
+    border: 1px solid #ccd8d0;
+    border-radius: 0.55rem;
+
+    transition:
+        border-color 0.15s,
+        box-shadow 0.15s,
+        background-color 0.15s;
+}
+
+
+.form-card input:not([type="checkbox"]):hover,
+.form-card select:hover,
+.form-card textarea:hover {
+    border-color: #aebfb4;
+}
+
+
+.form-card textarea {
+    min-height: 120px;
+
+    resize: vertical;
+}
+
+
+.form-card input:focus,
+.form-card select:focus,
+.form-card textarea:focus {
+    background-color: #ffffff;
+
+    border-color: var(--ligahub-verde-claro);
+
+    outline: 0;
+
+    box-shadow:
+        0 0 0 0.2rem rgba(52, 168, 111, 0.12);
+}
+
+
+.form-card .helptext {
+    display: block;
+
+    margin-top: 0.4rem;
+
+    color: var(--ligahub-texto-suave);
+
+    font-size: 0.82rem;
+}
+
+
+.form-card ul {
+    margin-top: 0.5rem;
+
+    padding-left: 1.25rem;
+
+    color: var(--ligahub-texto-suave);
+
+    font-size: 0.82rem;
+}
+
+
+.errorlist {
+    color: #b42318 !important;
+
+    font-size: 0.85rem;
+}
+
+
+/* =========================================================
+   ALERTAS / MESSAGES
+   ========================================================= */
+
+.alert {
+    border: 0;
+
+    border-radius: 0.75rem;
+
+    box-shadow:
+        0 5px 15px rgba(0, 0, 0, 0.04);
+}
+
+
+.alert-success {
+    background-color: #e8f7ee;
+
+    color: #175d38;
+}
+
+
+.alert-danger {
+    background-color: #fcebea;
+
+    color: #9c2b23;
+}
+
+
+.alert-warning {
+    background-color: #fff5db;
+
+    color: #765717;
+}
+
+
+.alert-info {
+    background-color: #eaf4f7;
+
+    color: #285b6a;
+}
+
+
+/* =========================================================
+   LOGIN E CADASTRO
+   ========================================================= */
+
+.row.justify-content-center .form-card {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.footer-ligahub {
+    margin-top: auto;
+
+    padding: 1.6rem 0;
+
+    background-color: #eef3f0;
+
+    color: var(--ligahub-texto-suave);
+
+    font-size: 0.84rem;
+
+    border-top: 1px solid var(--ligahub-borda);
+}
+
+
+/* =========================================================
+   SELEÇÃO DE TEXTO
+   ========================================================= */
+
+::selection {
+    background-color: rgba(52, 168, 111, 0.25);
+
+    color: var(--ligahub-texto);
+}
+
+/* =========================================================
+   PÁGINAS DE DETALHES
+   ========================================================= */
+
+.detail-topo {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1.5rem;
+
+    margin-bottom: 2rem;
+}
+
+
+.detail-titulo {
+    margin-bottom: 0.3rem;
+
+    font-size: clamp(2rem, 4vw, 2.7rem);
+    font-weight: 760;
+
+    line-height: 1.1;
+    letter-spacing: -0.07rem;
+}
+
+
+.detail-label {
+    color: var(--ligahub-verde);
+
+    font-size: 0.78rem;
+    font-weight: 750;
+
+    text-transform: uppercase;
+    letter-spacing: 0.08rem;
+}
+
+
+.status-ativo {
+    background-color: #e4f6eb;
+    color: #17653e;
+
+    border: 1px solid #bee5cd;
+}
+
+
+.resumo-card {
+    display: flex;
+    flex-direction: column;
+
+    height: 100%;
+
+    padding: 1.35rem;
+
+    background:
+        linear-gradient(
+            150deg,
+            #ffffff,
+            #f7faf8
+        );
+
+    border: 1px solid var(--ligahub-borda);
+    border-radius: 0.9rem;
+
+    box-shadow:
+        0 4px 16px rgba(13, 59, 38, 0.035);
+}
+
+
+.resumo-valor {
+    color: var(--ligahub-verde-escuro);
+
+    font-size: 1.8rem;
+    font-weight: 760;
+
+    line-height: 1.1;
+}
+
+
+.resumo-legenda {
+    margin-top: 0.35rem;
+
+    color: var(--ligahub-texto-suave);
+
+    font-size: 0.84rem;
+}
+
+
+.detail-card {
+    overflow: hidden;
+
+    background-color: #ffffff;
+
+    border: 1px solid var(--ligahub-borda);
+    border-radius: 1rem;
+
+    box-shadow:
+        0 5px 20px rgba(13, 59, 38, 0.04);
+}
+
+
+.detail-card-cabecalho {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 1rem;
+
+    padding: 1.25rem 1.4rem;
+
+    background:
+        linear-gradient(
+            180deg,
+            #ffffff,
+            #fafcfb
+        );
+
+    border-bottom: 1px solid var(--ligahub-borda);
+}
+
+
+.detail-card-cabecalho h2 {
+    margin: 0;
+
+    font-size: 1.05rem;
+    font-weight: 720;
+}
+
+
+.detail-card-cabecalho p {
+    margin: 0.2rem 0 0;
+
+    color: var(--ligahub-texto-suave);
+
+    font-size: 0.84rem;
+}
+
+
+.detail-card-conteudo {
+    padding: 1.4rem;
+}
+
+
+.info-linha {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 2rem;
+
+    padding: 0.8rem 0;
+
+    border-bottom: 1px solid #edf1ee;
+}
+
+
+.info-linha:first-child {
+    padding-top: 0;
+}
+
+
+.info-linha:last-child {
+    padding-bottom: 0;
+
+    border-bottom: 0;
+}
+
+
+.info-linha > span {
+    color: var(--ligahub-texto-suave);
+
+    font-size: 0.88rem;
+}
+
+
+.time-mini-card {
+    display: flex;
+    align-items: center;
+
+    gap: 0.9rem;
+
+    height: 100%;
+
+    padding: 0.85rem;
+
+    color: var(--ligahub-texto);
+
+    background-color: #f8faf9;
+
+    border: 1px solid #e2e9e4;
+    border-radius: 0.75rem;
+
+    transition:
+        transform 0.15s,
+        border-color 0.15s,
+        background-color 0.15s;
+}
+
+
+.time-mini-card:hover {
+    transform: translateY(-2px);
+
+    color: var(--ligahub-texto);
+
+    background-color: #ffffff;
+
+    border-color: #bcd8c8;
+}
+
+
+.time-mini-card img {
+    width: 44px;
+    height: 44px;
+
+    object-fit: contain;
+}
+
+
+.time-mini-card div {
+    display: flex;
+    flex-direction: column;
+}
+
+
+.time-mini-card span {
+    color: var(--ligahub-texto-suave);
+
+    font-size: 0.8rem;
+}
+
+
+.table-detail {
+    width: 100%;
+
+    margin: 0;
+
+    border: 0;
+    border-radius: 0;
+
+    box-shadow: none;
+}
+
+
+.link-detalhe {
+    font-weight: 650;
+}
+
+
+.time-identidade {
+    display: flex;
+    align-items: center;
+
+    gap: 1.2rem;
+}
+
+
+.escudo-detalhe {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 82px;
+    height: 82px;
+
+    padding: 0.6rem;
+
+    background-color: #ffffff;
+
+    border: 1px solid var(--ligahub-borda);
+    border-radius: 1rem;
+
+    box-shadow:
+        0 5px 18px rgba(13, 59, 38, 0.06);
+}
+
+
+.escudo-detalhe img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+}
+
+
+.item-lista-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 1rem;
+
+    padding: 0.85rem 0;
+
+    color: var(--ligahub-texto);
+
+    border-bottom: 1px solid #edf1ee;
+}
+
+
+.item-lista-link:first-child {
+    padding-top: 0;
+}
+
+
+.item-lista-link:last-child {
+    padding-bottom: 0;
+
+    border-bottom: 0;
+}
+
+
+.item-lista-link:hover {
+    color: var(--ligahub-verde);
+}
+
+
+.item-lista-link span {
+    display: flex;
+    flex-direction: column;
+}
+
+
+.item-lista-link small {
+    color: var(--ligahub-texto-suave);
+}
+
+
+.numero-camisa {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    min-width: 34px;
+    height: 34px;
+
+    padding: 0 0.4rem;
+
+    background-color: #edf6f0;
+
+    color: var(--ligahub-verde-escuro);
+
+    border-radius: 0.55rem;
+
+    font-weight: 750;
+}
+
+
+/* =========================================================
+   PLACAR
+   ========================================================= */
+
+.placar-card {
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        auto
+        minmax(0, 1fr);
+
+    align-items: center;
+
+    gap: 2rem;
+
+    padding: 2.5rem;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--ligahub-verde-profundo),
+            #105436
+        );
+
+    color: #ffffff;
+
+    border-radius: 1.1rem;
+
+    box-shadow:
+        0 15px 35px rgba(7, 41, 27, 0.16);
+}
+
+
+.placar-time {
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+
+    gap: 0.85rem;
+
+    text-align: center;
+}
+
+
+.placar-time img {
+    width: 76px;
+    height: 76px;
+
+    padding: 0.35rem;
+
+    background-color: #ffffff;
+
+    object-fit: contain;
+
+    border-radius: 0.8rem;
+}
+
+
+.placar-time a {
+    color: #ffffff;
+
+    font-size: 1.05rem;
+    font-weight: 700;
+}
+
+
+.placar-time a:hover {
+    color: #b8ebcd;
+}
+
+
+.placar-centro {
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+
+    gap: 0.6rem;
+}
+
+
+.placar-numeros {
+    display: flex;
+
+    align-items: center;
+
+    gap: 0.85rem;
+
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 780;
+
+    line-height: 1;
+}
+
+
+.placar-numeros span {
+    color: rgba(255, 255, 255, 0.45);
+
+    font-size: 1.5rem;
+    font-weight: 400;
+}
+
+
+.placar-numeros.futuro {
+    color: rgba(255, 255, 255, 0.65);
+}
+
+
+.partida-status {
+    padding: 0.25rem 0.6rem;
+
+    background-color: rgba(255, 255, 255, 0.09);
+
+    color: rgba(255, 255, 255, 0.75);
+
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 999px;
+
+    font-size: 0.7rem;
+    font-weight: 700;
+
+    text-transform: uppercase;
+    letter-spacing: 0.05rem;
+}
+
+
+.partida-status.realizada {
+    background-color: rgba(93, 211, 145, 0.12);
+
+    color: #a8ebc5;
+
+    border-color: rgba(93, 211, 145, 0.22);
+}
+
+/* =========================================================
+   RESPONSIVIDADE
+   ========================================================= */
+
+@media (max-width: 768px){
+
+    .detail-topo {
+    flex-direction: column;
+}
+
+
+.placar-card {
+    grid-template-columns: 1fr;
+
+    gap: 1.4rem;
+
+    padding: 2rem 1rem;
+}
+
+
+.placar-centro {
+    order: -1;
+}
+
+
+.escudo-detalhe {
+    width: 68px;
+    height: 68px;
+}
+
+
+.info-linha {
+    align-items: flex-start;
+    flex-direction: column;
+
+    gap: 0.2rem;
+}
+
+    .main-ligahub {
+        padding-top: 1.6rem;
+    }
+
+
+    .hero-ligahub {
+        padding: 2.25rem 1.6rem;
+
+        border-radius: 1rem;
+    }
+
+
+    .hero-ligahub h1 {
+        letter-spacing: -0.07rem;
+    }
+
+
+    .hero-ligahub::before,
+    .hero-ligahub::after {
+        opacity: 0.45;
+    }
+
+
+    .cabecalho-pagina {
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+
+    .form-card {
+        padding: 1.4rem;
+    }
+
+
+    table {
+        font-size: 0.86rem;
+    }
+
+
+    th,
+    td {
+        padding: 0.75rem;
+    }
+
+}
+
+.logo-ligahub {
+    display: block;
+
+    width: auto;
+    height: 52px;
+
+    object-fit: contain;
+}
+

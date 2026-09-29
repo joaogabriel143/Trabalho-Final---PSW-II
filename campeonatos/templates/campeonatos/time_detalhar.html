@@ -1,0 +1,274 @@
+{% extends "campeonatos/base.html" %}
+
+
+{% block title %}
+    {{ time.nome }} | LigaHub
+{% endblock %}
+
+
+{% block content %}
+
+
+<div class="detail-topo">
+
+    <div class="time-identidade">
+
+        {% if time.escudo %}
+
+            <div class="escudo-detalhe">
+
+                <img
+                    src="{{ time.escudo.url }}"
+                    alt="Escudo de {{ time.nome }}"
+                >
+
+            </div>
+
+        {% endif %}
+
+
+        <div>
+
+            <p class="detail-label mb-1">
+                Time
+            </p>
+
+            <h1 class="detail-titulo">
+                {{ time.nome }}
+            </h1>
+
+            <p class="texto-secundario mb-0">
+                {{ time.cidade }}
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <a
+        class="btn btn-outline-secondary"
+        href="{% url 'campeonatos:time_listar' %}"
+    >
+        Voltar
+    </a>
+
+</div>
+
+
+
+<div class="row g-3 mb-4">
+
+
+    <div class="col-md-6">
+
+        <div class="detail-card h-100">
+
+            <div class="detail-card-cabecalho">
+
+                <h2>
+                    Informações
+                </h2>
+
+            </div>
+
+
+            <div class="detail-card-conteudo">
+
+                <div class="info-linha">
+
+                    <span>Técnico</span>
+
+                    <a
+                        href="{% url 'campeonatos:pessoa_detalhar' time.tecnico.pk %}"
+                    >
+                        {{ time.tecnico.nome }}
+                    </a>
+
+                </div>
+
+
+                <div class="info-linha">
+
+                    <span>Cidade</span>
+
+                    <strong>
+                        {{ time.cidade }}
+                    </strong>
+
+                </div>
+
+
+                <div class="info-linha">
+
+                    <span>Fundação</span>
+
+                    <strong>
+                        {{ time.ano_fundacao }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <div class="col-md-6">
+
+        <div class="detail-card h-100">
+
+            <div class="detail-card-cabecalho">
+
+                <h2>
+                    Campeonatos
+                </h2>
+
+            </div>
+
+
+            <div class="detail-card-conteudo">
+
+                {% for inscricao in inscricoes %}
+
+                    <a
+                        class="item-lista-link"
+                        href="{% url 'campeonatos:campeonato_detalhar' inscricao.campeonato.pk %}"
+                    >
+
+                        <span>
+                            {{ inscricao.campeonato.nome }}
+                        </span>
+
+                        <strong>
+                            {{ inscricao.campeonato.temporada }}
+                        </strong>
+
+                    </a>
+
+                {% empty %}
+
+                    <p class="texto-secundario mb-0">
+                        Este time ainda não participa
+                        de campeonatos.
+                    </p>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+
+<div class="detail-card">
+
+    <div class="detail-card-cabecalho">
+
+        <div>
+
+            <h2>
+                Elenco
+            </h2>
+
+            <p>
+                Jogadores vinculados ao time.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="detail-card-conteudo p-0">
+
+        {% if elenco %}
+
+            <div class="table-responsive">
+
+                <table class="table-detail mb-0">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Camisa</th>
+                            <th>Jogador</th>
+                            <th>Posição</th>
+                            <th>Temporada</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for vinculo in elenco %}
+
+                            <tr>
+
+                                <td>
+                                    <span class="numero-camisa">
+                                        {{ vinculo.numero_camisa }}
+                                    </span>
+                                </td>
+
+
+                                <td>
+
+                                    <a
+                                        href="{% url 'campeonatos:pessoa_detalhar' vinculo.jogador.pk %}"
+                                    >
+                                        {{ vinculo.jogador.nome }}
+                                    </a>
+
+                                </td>
+
+
+                                <td>
+                                    {{ vinculo.posicao }}
+                                </td>
+
+
+                                <td>
+                                    {{ vinculo.temporada }}
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+        {% else %}
+
+            <div class="p-4">
+
+                <p class="texto-secundario mb-0">
+                    Nenhum jogador adicionado ao elenco.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+
+{% endblock %}
