@@ -1,0 +1,213 @@
+{% extends "campeonatos/base.html" %}
+
+
+{% block title %}
+    Partida | LigaHub
+{% endblock %}
+
+
+{% block content %}
+
+
+<div class="detail-topo">
+
+    <div>
+
+        <p class="detail-label mb-1">
+            {{ partida.campeonato }}
+            ·
+            Rodada {{ partida.rodada }}
+        </p>
+
+        <h1 class="detail-titulo">
+            Detalhes da partida
+        </h1>
+
+    </div>
+
+
+    <a
+        class="btn btn-outline-secondary"
+        href="{% url 'campeonatos:partida_listar' %}"
+    >
+        Voltar
+    </a>
+
+</div>
+
+
+
+<div class="placar-card mb-4">
+
+
+    <div class="placar-time">
+
+        {% if partida.time_mandante.escudo %}
+
+            <img
+                src="{{ partida.time_mandante.escudo.url }}"
+                alt="{{ partida.time_mandante.nome }}"
+            >
+
+        {% endif %}
+
+
+        <a
+            href="{% url 'campeonatos:time_detalhar' partida.time_mandante.pk %}"
+        >
+            {{ partida.time_mandante.nome }}
+        </a>
+
+    </div>
+
+
+
+    <div class="placar-centro">
+
+        {% if partida.realizada %}
+
+            <div class="placar-numeros">
+
+                {{ partida.gols_mandante }}
+
+                <span>×</span>
+
+                {{ partida.gols_visitante }}
+
+            </div>
+
+
+            <span class="partida-status realizada">
+                Encerrada
+            </span>
+
+
+        {% else %}
+
+
+            <div class="placar-numeros futuro">
+
+                —
+
+                <span>×</span>
+
+                —
+
+            </div>
+
+
+            <span class="partida-status">
+                Agendada
+            </span>
+
+
+        {% endif %}
+
+    </div>
+
+
+
+    <div class="placar-time">
+
+        {% if partida.time_visitante.escudo %}
+
+            <img
+                src="{{ partida.time_visitante.escudo.url }}"
+                alt="{{ partida.time_visitante.nome }}"
+            >
+
+        {% endif %}
+
+
+        <a
+            href="{% url 'campeonatos:time_detalhar' partida.time_visitante.pk %}"
+        >
+            {{ partida.time_visitante.nome }}
+        </a>
+
+    </div>
+
+
+</div>
+
+
+
+<div class="detail-card">
+
+    <div class="detail-card-cabecalho">
+
+        <h2>
+            Informações da partida
+        </h2>
+
+    </div>
+
+
+    <div class="detail-card-conteudo">
+
+
+        <div class="info-linha">
+
+            <span>Campeonato</span>
+
+            <a
+                href="{% url 'campeonatos:campeonato_detalhar' partida.campeonato.pk %}"
+            >
+                {{ partida.campeonato }}
+            </a>
+
+        </div>
+
+
+        <div class="info-linha">
+
+            <span>Rodada</span>
+
+            <strong>
+                {{ partida.rodada }}
+            </strong>
+
+        </div>
+
+
+        <div class="info-linha">
+
+            <span>Data</span>
+
+            <strong>
+                {{ partida.data|date:"d/m/Y" }}
+            </strong>
+
+        </div>
+
+
+        <div class="info-linha">
+
+            <span>Horário</span>
+
+            <strong>
+                {{ partida.horario|time:"H:i" }}
+            </strong>
+
+        </div>
+
+
+        <div class="info-linha">
+
+            <span>Estádio</span>
+
+            <a
+                href="{% url 'campeonatos:estadio_detalhar' partida.estadio.pk %}"
+            >
+                {{ partida.estadio.nome }}
+            </a>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+{% endblock %}

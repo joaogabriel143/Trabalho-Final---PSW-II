@@ -1,0 +1,228 @@
+{% extends "campeonatos/base.html" %}
+
+
+{% block title %}
+    {{ estadio.nome }} | LigaHub
+{% endblock %}
+
+
+{% block content %}
+
+
+<div class="detail-topo">
+
+    <div>
+
+        <p class="detail-label mb-1">
+            Estádio
+        </p>
+
+        <h1 class="detail-titulo">
+            {{ estadio.nome }}
+        </h1>
+
+        <p class="texto-secundario mb-0">
+            {{ estadio.cidade }}
+        </p>
+
+    </div>
+
+
+    <a
+        class="btn btn-outline-secondary"
+        href="{% url 'campeonatos:estadio_listar' %}"
+    >
+        Voltar
+    </a>
+
+</div>
+
+
+
+<div class="row g-3 mb-4">
+
+
+    <div class="col-md-6">
+
+        <div class="resumo-card">
+
+            <span class="resumo-valor">
+                {{ estadio.capacidade }}
+            </span>
+
+            <span class="resumo-legenda">
+                Capacidade
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div class="col-md-6">
+
+        <div class="resumo-card">
+
+            <span class="resumo-valor">
+                {{ partidas|length }}
+            </span>
+
+            <span class="resumo-legenda">
+                Partidas cadastradas
+            </span>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+
+<div class="detail-card mb-4">
+
+    <div class="detail-card-cabecalho">
+
+        <h2>
+            Localização
+        </h2>
+
+    </div>
+
+
+    <div class="detail-card-conteudo">
+
+        <div class="info-linha">
+
+            <span>Cidade</span>
+
+            <strong>
+                {{ estadio.cidade }}
+            </strong>
+
+        </div>
+
+
+        <div class="info-linha">
+
+            <span>Endereço</span>
+
+            <strong>
+                {{ estadio.endereco }}
+            </strong>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<div class="detail-card">
+
+    <div class="detail-card-cabecalho">
+
+        <h2>
+            Partidas no estádio
+        </h2>
+
+    </div>
+
+
+    <div class="detail-card-conteudo p-0">
+
+        {% if partidas %}
+
+            <div class="table-responsive">
+
+                <table class="table-detail mb-0">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Data</th>
+                            <th>Campeonato</th>
+                            <th>Partida</th>
+                            <th></th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for partida in partidas %}
+
+                            <tr>
+
+                                <td>
+                                    {{ partida.data|date:"d/m/Y" }}
+                                </td>
+
+                                <td>
+                                    {{ partida.campeonato }}
+                                </td>
+
+                                <td>
+
+                                    {{ partida.time_mandante.nome }}
+
+                                    {% if partida.realizada %}
+
+                                        {{ partida.gols_mandante }}
+                                        ×
+                                        {{ partida.gols_visitante }}
+
+                                    {% else %}
+
+                                        ×
+
+                                    {% endif %}
+
+                                    {{ partida.time_visitante.nome }}
+
+                                </td>
+
+                                <td class="text-end">
+
+                                    <a
+                                        class="link-detalhe"
+                                        href="{% url 'campeonatos:partida_detalhar' partida.pk %}"
+                                    >
+                                        Ver
+                                    </a>
+
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        {% else %}
+
+            <div class="p-4">
+
+                <p class="texto-secundario mb-0">
+                    Nenhuma partida cadastrada neste estádio.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+
+{% endblock %}

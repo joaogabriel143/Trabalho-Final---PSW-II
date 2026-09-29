@@ -1,0 +1,154 @@
+{% extends "campeonatos/base.html" %}
+
+
+{% block title %}
+    {{ pessoa.nome }} | LigaHub
+{% endblock %}
+
+
+{% block content %}
+
+
+<div class="detail-topo">
+
+    <div>
+
+        <p class="detail-label mb-1">
+            Pessoa
+        </p>
+
+        <h1 class="detail-titulo">
+            {{ pessoa.nome }}
+        </h1>
+
+        <p class="texto-secundario mb-0">
+
+            Nascimento:
+            {{ pessoa.data_nascimento|date:"d/m/Y" }}
+
+        </p>
+
+    </div>
+
+
+    <a
+        class="btn btn-outline-secondary"
+        href="{% url 'campeonatos:pessoa_listar' %}"
+    >
+        Voltar
+    </a>
+
+</div>
+
+
+
+<div class="row g-3">
+
+
+    <div class="col-lg-6">
+
+        <div class="detail-card h-100">
+
+            <div class="detail-card-cabecalho">
+
+                <h2>
+                    Como técnico
+                </h2>
+
+            </div>
+
+
+            <div class="detail-card-conteudo">
+
+                {% for time in times_como_tecnico %}
+
+                    <a
+                        class="item-lista-link"
+                        href="{% url 'campeonatos:time_detalhar' time.pk %}"
+                    >
+
+                        <span>
+                            {{ time.nome }}
+                        </span>
+
+                        <span>
+                            {{ time.cidade }}
+                        </span>
+
+                    </a>
+
+                {% empty %}
+
+                    <p class="texto-secundario mb-0">
+                        Nenhum time vinculado como técnico.
+                    </p>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <div class="col-lg-6">
+
+        <div class="detail-card h-100">
+
+            <div class="detail-card-cabecalho">
+
+                <h2>
+                    Como jogador
+                </h2>
+
+            </div>
+
+
+            <div class="detail-card-conteudo">
+
+                {% for vinculo in vinculos_como_jogador %}
+
+                    <a
+                        class="item-lista-link"
+                        href="{% url 'campeonatos:time_detalhar' vinculo.time.pk %}"
+                    >
+
+                        <span>
+
+                            {{ vinculo.time.nome }}
+
+                            <small>
+                                #{{ vinculo.numero_camisa }}
+                                ·
+                                {{ vinculo.posicao }}
+                            </small>
+
+                        </span>
+
+                        <strong>
+                            {{ vinculo.temporada }}
+                        </strong>
+
+                    </a>
+
+                {% empty %}
+
+                    <p class="texto-secundario mb-0">
+                        Nenhum vínculo como jogador.
+                    </p>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+{% endblock %}
