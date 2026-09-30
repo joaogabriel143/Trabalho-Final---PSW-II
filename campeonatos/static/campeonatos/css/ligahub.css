@@ -1394,6 +1394,22 @@ tbody tr:hover td {
 
 @media (max-width: 768px){
 
+
+.elenco-total {
+    display: none;
+}
+
+
+.elenco-clube-info span {
+    white-space: normal;
+}
+
+
+.elenco-escudo {
+    width: 50px;
+    height: 50px;
+}
+
     .detail-topo {
     flex-direction: column;
 }
@@ -1482,3 +1498,270 @@ tbody tr:hover td {
     object-fit: contain;
 }
 
+.escudo-classificacao {
+    width: 30px;
+    height: 30px;
+
+    object-fit: contain;
+
+    flex-shrink: 0;
+}
+
+html,
+body {
+    min-height: 100%;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}
+
+/* =========================================================
+   CENTRAL DE ELENCOS
+   ========================================================= */
+
+.elenco-accordion {
+    display: flex;
+    flex-direction: column;
+
+    gap: 1rem;
+}
+
+
+.elenco-clube-card {
+    overflow: hidden;
+
+    background-color: #ffffff;
+
+    border: 1px solid var(--ligahub-borda) !important;
+    border-radius: 1rem !important;
+
+    box-shadow:
+        0 5px 20px rgba(13, 59, 38, 0.04);
+}
+
+
+.elenco-clube-botao {
+    display: flex;
+
+    align-items: center;
+
+    gap: 1rem;
+
+    padding: 1.15rem 1.3rem;
+
+    background-color: #ffffff !important;
+
+    box-shadow: none !important;
+}
+
+
+.elenco-clube-botao:not(.collapsed) {
+    color: var(--ligahub-texto);
+
+    background:
+        linear-gradient(
+            135deg,
+            #ffffff,
+            #f1f8f4
+        ) !important;
+}
+
+
+.elenco-clube-botao::after {
+    margin-left: 1.25rem;
+}
+
+
+.elenco-clube-identidade {
+    display: flex;
+
+    align-items: center;
+
+    gap: 1rem;
+
+    min-width: 0;
+}
+
+
+.elenco-escudo {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    width: 58px;
+    height: 58px;
+
+    padding: 0.4rem;
+
+    background-color: #f7faf8;
+
+    border: 1px solid #e2ebe5;
+    border-radius: 0.85rem;
+}
+
+
+.elenco-escudo img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+}
+
+
+.elenco-escudo span {
+    color: var(--ligahub-verde);
+
+    font-size: 1.3rem;
+    font-weight: 800;
+}
+
+
+.elenco-clube-info {
+    display: flex;
+    flex-direction: column;
+
+    min-width: 0;
+
+    text-align: left;
+}
+
+
+.elenco-clube-info strong {
+    color: var(--ligahub-texto);
+
+    font-size: 1rem;
+}
+
+
+.elenco-clube-info span {
+    margin-top: 0.15rem;
+
+    color: var(--ligahub-texto-suave);
+
+    font-size: 0.82rem;
+}
+
+
+.elenco-total {
+    margin-left: auto;
+
+    padding: 0.35rem 0.7rem;
+
+    color: var(--ligahub-verde-escuro);
+
+    background-color: #edf7f1;
+
+    border-radius: 999px;
+
+    font-size: 0.75rem;
+    font-weight: 700;
+
+    white-space: nowrap;
+}
+
+
+.elenco-temporada + .elenco-temporada {
+    border-top: 8px solid #f4f7f5;
+}
+
+
+.elenco-temporada-titulo {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 1rem;
+
+    padding: 1rem 1.3rem;
+
+    background-color: #fafcfb;
+
+    border-top: 1px solid #edf1ee;
+    border-bottom: 1px solid #edf1ee;
+}
+
+
+.elenco-temporada-titulo > div {
+    display: flex;
+
+    align-items: baseline;
+
+    gap: 0.35rem;
+}
+
+
+.elenco-temporada-titulo span {
+    color: var(--ligahub-texto-suave);
+
+    font-size: 0.77rem;
+}
+
+
+.elenco-temporada-titulo strong {
+    color: var(--ligahub-verde-escuro);
+}
+
+
+.elenco-posicao {
+    display: inline-flex;
+
+    padding: 0.25rem 0.6rem;
+
+    background-color: #f3f6f4;
+
+    border-radius: 999px;
+
+    font-size: 0.78rem;
+}
+
+
+.elenco-vazio {
+    display: flex;
+
+    align-items: center;
+
+    gap: 1rem;
+
+    padding: 1.4rem;
+}
+
+
+.elenco-vazio-simbolo {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    width: 48px;
+    height: 48px;
+
+    color: var(--ligahub-verde);
+
+    background-color: #edf7f1;
+
+    border-radius: 50%;
+
+    font-weight: 800;
+}
+
+
+.elenco-vazio p {
+    margin-top: 0.15rem;
+
+    color: var(--ligahub-texto-suave);
+
+    font-size: 0.84rem;
+}

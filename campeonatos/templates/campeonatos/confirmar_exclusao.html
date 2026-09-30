@@ -1,0 +1,102 @@
+{% extends "campeonatos/base.html" %}
+
+
+{% block title %}
+    {{ titulo }} | LigaHub
+{% endblock %}
+
+
+{% block content %}
+
+
+<div class="row justify-content-center">
+
+    <div class="col-lg-7">
+
+        <div class="detail-card">
+
+            <div class="detail-card-cabecalho">
+
+                <div>
+
+                    <p class="detail-label mb-1">
+                        Confirmação
+                    </p>
+
+                    <h1 class="h3 mb-0">
+                        {{ titulo }}
+                    </h1>
+
+                </div>
+
+            </div>
+
+
+            <div class="detail-card-conteudo">
+
+                <p>
+                    Tem certeza que deseja excluir:
+                </p>
+
+
+                <div class="p-3 bg-light rounded mb-3">
+
+                    <strong>
+                        {{ objeto }}
+                    </strong>
+
+                </div>
+
+
+                {% if aviso %}
+
+                    <div class="alert alert-warning">
+
+                        {{ aviso }}
+
+                    </div>
+
+                {% endif %}
+
+
+                <p class="texto-secundario">
+                    Esta ação não poderá ser desfeita.
+                </p>
+
+
+                <form method="post">
+
+                    {% csrf_token %}
+
+
+                    <div class="d-flex gap-2">
+
+                        <button
+                            type="submit"
+                            class="btn btn-danger"
+                        >
+                            Confirmar exclusão
+                        </button>
+
+
+                        <a
+                            href="{{ url_cancelar }}"
+                            class="btn btn-outline-secondary"
+                        >
+                            Cancelar
+                        </a>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+{% endblock %}
