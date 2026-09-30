@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.db.models import Prefetch
 
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
@@ -15,11 +16,15 @@ from django.contrib.auth.forms import (
 
 from django.contrib.auth.models import Permission
 
+from django.db.models.deletion import ProtectedError
+
 from django.shortcuts import (
     get_object_or_404,
     redirect,
     render,
 )
+
+from django.urls import reverse
 
 from django.utils.http import (
     url_has_allowed_host_and_scheme,
@@ -47,6 +52,127 @@ from .models import (
     Pessoa,
     Time,
 )
+
+
+# =========================================================
+# CLASSIFICAÇÃO
+# =========================================================
+
+def calcular_classificacao(campeonato):
+
+    inscricoes = (
+        campeonato
+        .inscricoes
+        .select_related("time")
+        .all()
+    )
+
+    tabela = {}
+
+    for inscricao in inscricoes:
+
+        time = inscricao.time
+
+        tabela[time.pk] = {
+            "time": time,
+            "jogos": 0,
+            "vitorias": 0,
+            "empates": 0,
+            "derrotas": 0,
+            "gols_pro": 0,
+            "gols_contra": 0,
+            "saldo_gols": 0,
+            "pontos": 0,
+        }
+
+    partidas = (
+        campeonato
+        .partidas
+        .filter(
+            gols_mandante__isnull=False,
+            gols_visitante__isnull=False,
+        )
+        .select_related(
+            "time_mandante",
+            "time_visitante",
+        )
+    )
+
+    for partida in partidas:
+
+        mandante = tabela.get(
+            partida.time_mandante_id
+        )
+
+        visitante = tabela.get(
+            partida.time_visitante_id
+        )
+
+        if not mandante or not visitante:
+            continue
+
+        gols_mandante = partida.gols_mandante
+        gols_visitante = partida.gols_visitante
+
+        mandante["jogos"] += 1
+        visitante["jogos"] += 1
+
+        mandante["gols_pro"] += gols_mandante
+        mandante["gols_contra"] += gols_visitante
+
+        visitante["gols_pro"] += gols_visitante
+        visitante["gols_contra"] += gols_mandante
+
+        if gols_mandante > gols_visitante:
+
+            mandante["vitorias"] += 1
+            mandante["pontos"] += 3
+
+            visitante["derrotas"] += 1
+
+        elif gols_visitante > gols_mandante:
+
+            visitante["vitorias"] += 1
+            visitante["pontos"] += 3
+
+            mandante["derrotas"] += 1
+
+        else:
+
+            mandante["empates"] += 1
+            visitante["empates"] += 1
+
+            mandante["pontos"] += 1
+            visitante["pontos"] += 1
+
+    classificacao = list(
+        tabela.values()
+    )
+
+    for item in classificacao:
+
+        item["saldo_gols"] = (
+            item["gols_pro"]
+            - item["gols_contra"]
+        )
+
+    classificacao.sort(
+        key=lambda item: (
+            -item["pontos"],
+            -item["vitorias"],
+            -item["saldo_gols"],
+            -item["gols_pro"],
+            item["time"].nome.lower(),
+        )
+    )
+
+    for posicao, item in enumerate(
+        classificacao,
+        start=1,
+    ):
+        item["posicao"] = posicao
+
+    return classificacao
 
 
 # =========================================================
@@ -146,8 +272,6 @@ def criar_conta(request):
 
             usuario = form.save()
 
-            # Todo usuário que cria uma conta no LigaHub
-            # poderá gerenciar os dados do sistema.
             permissoes = Permission.objects.filter(
                 content_type__app_label="campeonatos"
             )
@@ -265,11 +389,16 @@ def campeonato_detalhar(request, pk):
         gols_visitante__isnull=False,
     ).count()
 
+    classificacao = calcular_classificacao(
+        campeonato
+    )
+
     contexto = {
         "campeonato": campeonato,
         "inscricoes": inscricoes,
         "partidas": partidas,
         "partidas_realizadas": partidas_realizadas,
+        "classificacao": classificacao,
     }
 
     return render(
@@ -322,6 +451,100 @@ def campeonato_criar(request):
     )
 
 
+@login_required
+@permission_required(
+    "campeonatos.change_campeonato",
+    raise_exception=True,
+)
+def campeonato_editar(request, pk):
+
+    campeonato = get_object_or_404(
+        Campeonato,
+        pk=pk,
+    )
+
+    if request.method == "POST":
+
+        form = CampeonatoForm(
+            request.POST,
+            instance=campeonato,
+        )
+
+        if form.is_valid():
+
+            campeonato = form.save()
+
+            messages.success(
+                request,
+                "Campeonato atualizado com sucesso.",
+            )
+
+            return redirect(
+                "campeonatos:campeonato_detalhar",
+                pk=campeonato.pk,
+            )
+
+    else:
+
+        form = CampeonatoForm(
+            instance=campeonato
+        )
+
+    return render(
+        request,
+        "campeonatos/formulario.html",
+        {
+            "form": form,
+            "titulo": "Editar campeonato",
+        },
+    )
+
+
+@login_required
+@permission_required(
+    "campeonatos.delete_campeonato",
+    raise_exception=True,
+)
+def campeonato_excluir(request, pk):
+
+    campeonato = get_object_or_404(
+        Campeonato,
+        pk=pk,
+    )
+
+    if request.method == "POST":
+
+        nome = str(campeonato)
+
+        campeonato.delete()
+
+        messages.success(
+            request,
+            f'Campeonato "{nome}" excluído com sucesso.',
+        )
+
+        return redirect(
+            "campeonatos:campeonato_listar"
+        )
+
+    return render(
+        request,
+        "campeonatos/confirmar_exclusao.html",
+        {
+            "titulo": "Excluir campeonato",
+            "objeto": campeonato,
+            "aviso": (
+                "As inscrições e partidas deste campeonato "
+                "também serão removidas."
+            ),
+            "url_cancelar": reverse(
+                "campeonatos:campeonato_detalhar",
+                args=[campeonato.pk],
+            ),
+        },
+    )
+
+
 # =========================================================
 # PESSOAS
 # =========================================================
@@ -357,9 +580,7 @@ def pessoa_detalhar(request, pk):
     vinculos_como_jogador = (
         pessoa
         .times_como_jogador
-        .select_related(
-            "time"
-        )
+        .select_related("time")
         .order_by(
             "-temporada",
             "time__nome",
@@ -418,6 +639,118 @@ def pessoa_criar(request):
         {
             "form": form,
             "titulo": "Nova pessoa",
+        },
+    )
+
+
+@login_required
+@permission_required(
+    "campeonatos.change_pessoa",
+    raise_exception=True,
+)
+def pessoa_editar(request, pk):
+
+    pessoa = get_object_or_404(
+        Pessoa,
+        pk=pk,
+    )
+
+    if request.method == "POST":
+
+        form = PessoaForm(
+            request.POST,
+            instance=pessoa,
+        )
+
+        if form.is_valid():
+
+            pessoa = form.save()
+
+            messages.success(
+                request,
+                "Pessoa atualizada com sucesso.",
+            )
+
+            return redirect(
+                "campeonatos:pessoa_detalhar",
+                pk=pessoa.pk,
+            )
+
+    else:
+
+        form = PessoaForm(
+            instance=pessoa
+        )
+
+    return render(
+        request,
+        "campeonatos/formulario.html",
+        {
+            "form": form,
+            "titulo": "Editar pessoa",
+        },
+    )
+
+
+@login_required
+@permission_required(
+    "campeonatos.delete_pessoa",
+    raise_exception=True,
+)
+def pessoa_excluir(request, pk):
+
+    pessoa = get_object_or_404(
+        Pessoa,
+        pk=pk,
+    )
+
+    if request.method == "POST":
+
+        nome = pessoa.nome
+
+        try:
+
+            pessoa.delete()
+
+            messages.success(
+                request,
+                f'Pessoa "{nome}" excluída com sucesso.',
+            )
+
+            return redirect(
+                "campeonatos:pessoa_listar"
+            )
+
+        except ProtectedError:
+
+            messages.error(
+                request,
+                (
+                    "Não é possível excluir esta pessoa "
+                    "porque ela está cadastrada como técnico "
+                    "de um time."
+                ),
+            )
+
+            return redirect(
+                "campeonatos:pessoa_detalhar",
+                pk=pessoa.pk,
+            )
+
+    return render(
+        request,
+        "campeonatos/confirmar_exclusao.html",
+        {
+            "titulo": "Excluir pessoa",
+            "objeto": pessoa,
+            "aviso": (
+                "Vínculos desta pessoa como jogador "
+                "também poderão ser removidos."
+            ),
+            "url_cancelar": reverse(
+                "campeonatos:pessoa_detalhar",
+                args=[pessoa.pk],
+            ),
         },
     )
 
@@ -517,6 +850,117 @@ def estadio_criar(request):
     )
 
 
+@login_required
+@permission_required(
+    "campeonatos.change_estadio",
+    raise_exception=True,
+)
+def estadio_editar(request, pk):
+
+    estadio = get_object_or_404(
+        Estadio,
+        pk=pk,
+    )
+
+    if request.method == "POST":
+
+        form = EstadioForm(
+            request.POST,
+            instance=estadio,
+        )
+
+        if form.is_valid():
+
+            estadio = form.save()
+
+            messages.success(
+                request,
+                "Estádio atualizado com sucesso.",
+            )
+
+            return redirect(
+                "campeonatos:estadio_detalhar",
+                pk=estadio.pk,
+            )
+
+    else:
+
+        form = EstadioForm(
+            instance=estadio
+        )
+
+    return render(
+        request,
+        "campeonatos/formulario.html",
+        {
+            "form": form,
+            "titulo": "Editar estádio",
+        },
+    )
+
+
+@login_required
+@permission_required(
+    "campeonatos.delete_estadio",
+    raise_exception=True,
+)
+def estadio_excluir(request, pk):
+
+    estadio = get_object_or_404(
+        Estadio,
+        pk=pk,
+    )
+
+    if request.method == "POST":
+
+        nome = estadio.nome
+
+        try:
+
+            estadio.delete()
+
+            messages.success(
+                request,
+                f'Estádio "{nome}" excluído com sucesso.',
+            )
+
+            return redirect(
+                "campeonatos:estadio_listar"
+            )
+
+        except ProtectedError:
+
+            messages.error(
+                request,
+                (
+                    "Não é possível excluir este estádio "
+                    "porque existem partidas vinculadas a ele."
+                ),
+            )
+
+            return redirect(
+                "campeonatos:estadio_detalhar",
+                pk=estadio.pk,
+            )
+
+    return render(
+        request,
+        "campeonatos/confirmar_exclusao.html",
+        {
+            "titulo": "Excluir estádio",
+            "objeto": estadio,
+            "aviso": (
+                "A exclusão não será permitida se houver "
+                "partidas utilizando este estádio."
+            ),
+            "url_cancelar": reverse(
+                "campeonatos:estadio_detalhar",
+                args=[estadio.pk],
+            ),
+        },
+    )
+
+
 # =========================================================
 # TIMES
 # =========================================================
@@ -548,9 +992,7 @@ def time_detalhar(request, pk):
     elenco = (
         time
         .jogadores_time
-        .select_related(
-            "jogador"
-        )
+        .select_related("jogador")
         .order_by(
             "-temporada",
             "numero_camisa",
@@ -560,9 +1002,7 @@ def time_detalhar(request, pk):
     inscricoes = (
         time
         .inscricoes
-        .select_related(
-            "campeonato"
-        )
+        .select_related("campeonato")
         .order_by(
             "-campeonato__temporada",
             "campeonato__nome",
@@ -626,6 +1066,119 @@ def time_criar(request):
     )
 
 
+@login_required
+@permission_required(
+    "campeonatos.change_time",
+    raise_exception=True,
+)
+def time_editar(request, pk):
+
+    time = get_object_or_404(
+        Time,
+        pk=pk,
+    )
+
+    if request.method == "POST":
+
+        form = TimeForm(
+            request.POST,
+            request.FILES,
+            instance=time,
+        )
+
+        if form.is_valid():
+
+            time = form.save()
+
+            messages.success(
+                request,
+                "Time atualizado com sucesso.",
+            )
+
+            return redirect(
+                "campeonatos:time_detalhar",
+                pk=time.pk,
+            )
+
+    else:
+
+        form = TimeForm(
+            instance=time
+        )
+
+    return render(
+        request,
+        "campeonatos/formulario.html",
+        {
+            "form": form,
+            "titulo": "Editar time",
+        },
+    )
+
+
+@login_required
+@permission_required(
+    "campeonatos.delete_time",
+    raise_exception=True,
+)
+def time_excluir(request, pk):
+
+    time = get_object_or_404(
+        Time,
+        pk=pk,
+    )
+
+    if request.method == "POST":
+
+        nome = time.nome
+
+        try:
+
+            time.delete()
+
+            messages.success(
+                request,
+                f'Time "{nome}" excluído com sucesso.',
+            )
+
+            return redirect(
+                "campeonatos:time_listar"
+            )
+
+        except ProtectedError:
+
+            messages.error(
+                request,
+                (
+                    "Não é possível excluir este time "
+                    "porque existem partidas vinculadas a ele."
+                ),
+            )
+
+            return redirect(
+                "campeonatos:time_detalhar",
+                pk=time.pk,
+            )
+
+    return render(
+        request,
+        "campeonatos/confirmar_exclusao.html",
+        {
+            "titulo": "Excluir time",
+            "objeto": time,
+            "aviso": (
+                "Inscrições e vínculos de elenco poderão "
+                "ser removidos. Times utilizados em partidas "
+                "não podem ser excluídos."
+            ),
+            "url_cancelar": reverse(
+                "campeonatos:time_detalhar",
+                args=[time.pk],
+            ),
+        },
+    )
+
+
 # =========================================================
 # INSCRIÇÕES
 # =========================================================
@@ -663,10 +1216,7 @@ def inscricao_criar(request):
 
             messages.success(
                 request,
-                (
-                    "Time inscrito no campeonato "
-                    "com sucesso."
-                ),
+                "Time inscrito no campeonato com sucesso.",
             )
 
             return redirect(
@@ -718,14 +1268,12 @@ def partida_detalhar(request, pk):
         pk=pk,
     )
 
-    contexto = {
-        "partida": partida,
-    }
-
     return render(
         request,
         "campeonatos/partida_detalhar.html",
-        contexto,
+        {
+            "partida": partida,
+        },
     )
 
 
@@ -769,6 +1317,98 @@ def partida_criar(request):
     )
 
 
+@login_required
+@permission_required(
+    "campeonatos.change_partida",
+    raise_exception=True,
+)
+def partida_editar(request, pk):
+
+    partida = get_object_or_404(
+        Partida,
+        pk=pk,
+    )
+
+    if request.method == "POST":
+
+        form = PartidaForm(
+            request.POST,
+            instance=partida,
+        )
+
+        if form.is_valid():
+
+            partida = form.save()
+
+            messages.success(
+                request,
+                "Partida atualizada com sucesso.",
+            )
+
+            return redirect(
+                "campeonatos:partida_detalhar",
+                pk=partida.pk,
+            )
+
+    else:
+
+        form = PartidaForm(
+            instance=partida
+        )
+
+    return render(
+        request,
+        "campeonatos/formulario.html",
+        {
+            "form": form,
+            "titulo": "Editar partida",
+        },
+    )
+
+
+@login_required
+@permission_required(
+    "campeonatos.delete_partida",
+    raise_exception=True,
+)
+def partida_excluir(request, pk):
+
+    partida = get_object_or_404(
+        Partida,
+        pk=pk,
+    )
+
+    if request.method == "POST":
+
+        partida.delete()
+
+        messages.success(
+            request,
+            "Partida excluída com sucesso.",
+        )
+
+        return redirect(
+            "campeonatos:partida_listar"
+        )
+
+    return render(
+        request,
+        "campeonatos/confirmar_exclusao.html",
+        {
+            "titulo": "Excluir partida",
+            "objeto": partida,
+            "aviso": (
+                "Esta ação removerá definitivamente "
+                "a partida e seu resultado."
+            ),
+            "url_cancelar": reverse(
+                "campeonatos:partida_detalhar",
+                args=[partida.pk],
+            ),
+        },
+    )
+
+
 # =========================================================
 # ELENCOS
 # =========================================================
@@ -776,13 +1416,34 @@ def partida_criar(request):
 @login_required
 def elenco_listar(request):
 
-    jogadores = JogadorTime.objects.all()
+    jogadores_ordenados = (
+        JogadorTime.objects
+        .select_related("jogador")
+        .order_by(
+            "-temporada",
+            "numero_camisa",
+            "jogador__nome",
+        )
+    )
+
+    times = (
+        Time.objects
+        .select_related("tecnico")
+        .prefetch_related(
+            Prefetch(
+                "jogadores_time",
+                queryset=jogadores_ordenados,
+                to_attr="elenco_ordenado",
+            )
+        )
+        .order_by("nome")
+    )
 
     return render(
         request,
         "campeonatos/elenco_listar.html",
         {
-            "jogadores": jogadores,
+            "times": times,
         },
     )
 
