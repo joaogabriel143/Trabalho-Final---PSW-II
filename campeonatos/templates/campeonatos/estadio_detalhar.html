@@ -28,12 +28,40 @@
     </div>
 
 
+    <div class="d-flex flex-wrap gap-2">
+
+    {% if perms.campeonatos.change_estadio %}
+
+        <a
+            class="btn btn-ligahub-outline"
+            href="{% url 'campeonatos:estadio_editar' estadio.pk %}"
+        >
+            Editar
+        </a>
+
+    {% endif %}
+
+
+    {% if perms.campeonatos.delete_estadio %}
+
+        <a
+            class="btn btn-outline-danger"
+            href="{% url 'campeonatos:estadio_excluir' estadio.pk %}"
+        >
+            Excluir
+        </a>
+
+    {% endif %}
+
+
     <a
         class="btn btn-outline-secondary"
         href="{% url 'campeonatos:estadio_listar' %}"
     >
         Voltar
     </a>
+
+</div>
 
 </div>
 

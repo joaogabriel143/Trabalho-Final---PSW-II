@@ -8,78 +8,358 @@
 
 {% block content %}
 
-<h1>Elencos</h1>
+
+<!-- =====================================================
+     CABEÇALHO
+     ===================================================== -->
+
+<div class="cabecalho-pagina">
+
+    <div>
+
+        <p class="detail-label mb-1">
+            Clubes
+        </p>
+
+        <h1>
+            Elencos
+        </h1>
+
+        <p class="texto-secundario mb-0">
+            Consulte os jogadores vinculados a cada time.
+        </p>
+
+    </div>
 
 
-<div class="acoes">
+    {% if perms.campeonatos.add_jogadortime %}
 
-    <a
-        class="botao"
-        href="{% url 'campeonatos:elenco_criar' %}"
-    >
-        Adicionar jogador
-    </a>
+        <a
+            class="btn btn-success"
+            href="{% url 'campeonatos:elenco_criar' %}"
+        >
+            + Adicionar jogador
+        </a>
+
+    {% endif %}
 
 </div>
 
 
-<table>
 
-    <thead>
+<!-- =====================================================
+     CLUBES
+     ===================================================== -->
 
-        <tr>
-            <th>Time</th>
-            <th>Nº</th>
-            <th>Jogador</th>
-            <th>Posição</th>
-            <th>Temporada</th>
-        </tr>
+{% if times %}
 
-    </thead>
+    <div class="accordion elenco-accordion" id="accordionElencos">
+
+        {% for time in times %}
+
+            <div class="accordion-item elenco-clube-card">
 
 
-    <tbody>
+                <!-- CABEÇALHO DO TIME -->
 
-        {% for jogador_time in jogadores %}
+                <h2
+                    class="accordion-header"
+                    id="cabecalhoTime{{ time.pk }}"
+                >
 
-            <tr>
+                    <button
+                        class="accordion-button collapsed elenco-clube-botao"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#elencoTime{{ time.pk }}"
+                        aria-expanded="false"
+                        aria-controls="elencoTime{{ time.pk }}"
+                    >
 
-                <td>
-                    {{ jogador_time.time }}
-                </td>
 
-                <td>
-                    {{ jogador_time.numero_camisa }}
-                </td>
+                        <div class="elenco-clube-identidade">
 
-                <td>
-                    {{ jogador_time.jogador }}
-                </td>
 
-                <td>
-                    {{ jogador_time.posicao }}
-                </td>
+                            <div class="elenco-escudo">
 
-                <td>
-                    {{ jogador_time.temporada }}
-                </td>
+                                {% if time.escudo %}
 
-            </tr>
+                                    <img
+                                        src="{{ time.escudo.url }}"
+                                        alt="Escudo de {{ time.nome }}"
+                                    >
 
-        {% empty %}
+                                {% else %}
 
-            <tr>
+                                    <span>
+                                        {{ time.nome|slice:":1" }}
+                                    </span>
 
-                <td colspan="5">
-                    Nenhum jogador cadastrado em elenco.
-                </td>
+                                {% endif %}
 
-            </tr>
+                            </div>
+
+
+                            <div class="elenco-clube-info">
+
+                                <strong>
+                                    {{ time.nome }}
+                                </strong>
+
+                                <span>
+
+                                    {{ time.cidade }}
+
+                                    {% if time.tecnico %}
+
+                                        · Técnico:
+                                        {{ time.tecnico.nome }}
+
+                                    {% endif %}
+
+                                </span>
+
+                            </div>
+
+
+                        </div>
+
+
+                        <div class="elenco-total">
+
+                            {{ time.elenco_ordenado|length }}
+
+                            {% if time.elenco_ordenado|length == 1 %}
+
+                                atleta
+
+                            {% else %}
+
+                                atletas
+
+                            {% endif %}
+
+                        </div>
+
+
+                    </button>
+
+                </h2>
+
+
+
+                <!-- CONTEÚDO DO ELENCO -->
+
+                <div
+                    id="elencoTime{{ time.pk }}"
+                    class="accordion-collapse collapse"
+                    aria-labelledby="cabecalhoTime{{ time.pk }}"
+                    data-bs-parent="#accordionElencos"
+                >
+
+                    <div class="accordion-body p-0">
+
+
+                        {% if time.elenco_ordenado %}
+
+
+                            {% regroup time.elenco_ordenado by temporada as temporadas %}
+
+
+                            {% for temporada in temporadas %}
+
+
+                                <div class="elenco-temporada">
+
+
+                                    <div class="elenco-temporada-titulo">
+
+                                        <div>
+
+                                            <span>
+                                                Temporada
+                                            </span>
+
+                                            <strong>
+                                                {{ temporada.grouper }}
+                                            </strong>
+
+                                        </div>
+
+
+                                        <span class="badge rounded-pill text-bg-light">
+
+                                            {{ temporada.list|length }}
+
+                                            {% if temporada.list|length == 1 %}
+
+                                                jogador
+
+                                            {% else %}
+
+                                                jogadores
+
+                                            {% endif %}
+
+                                        </span>
+
+                                    </div>
+
+
+
+                                    <div class="table-responsive">
+
+                                        <table class="table-detail mb-0">
+
+                                            <thead>
+
+                                                <tr>
+
+                                                    <th>
+                                                        Camisa
+                                                    </th>
+
+                                                    <th>
+                                                        Jogador
+                                                    </th>
+
+                                                    <th>
+                                                        Posição
+                                                    </th>
+
+                                                    <th></th>
+
+                                                </tr>
+
+                                            </thead>
+
+
+                                            <tbody>
+
+
+                                                {% for vinculo in temporada.list %}
+
+                                                    <tr>
+
+
+                                                        <td>
+
+                                                            <span class="numero-camisa">
+                                                                {{ vinculo.numero_camisa }}
+                                                            </span>
+
+                                                        </td>
+
+
+                                                        <td>
+
+                                                            <a
+                                                                class="fw-semibold"
+                                                                href="{% url 'campeonatos:pessoa_detalhar' vinculo.jogador.pk %}"
+                                                            >
+                                                                {{ vinculo.jogador.nome }}
+                                                            </a>
+
+                                                        </td>
+
+
+                                                        <td>
+
+                                                            <span class="elenco-posicao">
+                                                                {{ vinculo.posicao }}
+                                                            </span>
+
+                                                        </td>
+
+
+                                                        <td class="text-end">
+
+                                                            <a
+                                                                class="link-detalhe"
+                                                                href="{% url 'campeonatos:time_detalhar' time.pk %}"
+                                                            >
+                                                                Ver time
+                                                            </a>
+
+                                                        </td>
+
+
+                                                    </tr>
+
+                                                {% endfor %}
+
+
+                                            </tbody>
+
+                                        </table>
+
+                                    </div>
+
+
+                                </div>
+
+
+                            {% endfor %}
+
+
+                        {% else %}
+
+
+                            <div class="elenco-vazio">
+
+                                <div class="elenco-vazio-simbolo">
+                                    11
+                                </div>
+
+
+                                <div>
+
+                                    <strong>
+                                        Elenco ainda não cadastrado
+                                    </strong>
+
+                                    <p class="mb-0">
+                                        Nenhum jogador foi vinculado
+                                        a este time.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                        {% endif %}
+
+
+                    </div>
+
+                </div>
+
+
+            </div>
 
         {% endfor %}
 
-    </tbody>
+    </div>
 
-</table>
+
+{% else %}
+
+
+    <div class="detail-card">
+
+        <div class="detail-card-conteudo">
+
+            <p class="texto-secundario mb-0">
+                Nenhum time cadastrado.
+            </p>
+
+        </div>
+
+    </div>
+
+
+{% endif %}
+
 
 {% endblock %}
