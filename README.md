@@ -73,47 +73,6 @@ Cada um desses módulos possui operações de criação, leitura/listagem, visua
 
 Os módulos de Inscrição e Elenco são utilizados como módulos auxiliares do sistema.
 
-## Arquitetura
-
-Todas as views da aplicação foram implementadas utilizando Function-Based Views (FBVs).
-
-O projeto não utiliza Class-Based Views (CBVs).
-
-## Estrutura principal do projeto
-
-```text
-ligahub/
-├── campeonatos/
-│   ├── migrations/
-│   ├── static/
-│   ├── templates/
-│   ├── admin.py
-│   ├── forms.py
-│   ├── models.py
-│   ├── urls.py
-│   └── views.py
-├── ligahub/
-│   ├── settings.py
-│   ├── urls.py
-│   ├── asgi.py
-│   └── wsgi.py
-├── media/
-├── manage.py
-├── requirements.txt
-├── diagrama_classes_ligahub.png
-└── README.md
-```
-
-## Diagrama de Classes
-
-O diagrama de classes utilizado na modelagem do sistema deve ser mantido no repositório com o nome:
-
-```text
-diagrama_classes_ligahub.png
-```
-
-> Se o arquivo do diagrama já estiver no repositório com outro nome, ele pode ser mantido, mas o nome acima facilita a identificação durante a avaliação.
-
 ## Pré-requisitos
 
 Antes de executar o projeto, tenha instalado:
